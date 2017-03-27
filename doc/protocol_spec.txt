@@ -1,0 +1,187 @@
+Command Messages:
+-----------------
+Command messages consist of a command name, followed by a space, followed by
+a message and terminated with the null character. In the case of commands, such
+as "list", the message can consist soley of a command name terminated with the
+null character.
+
+Examples:
+start 71\0
+options -m -n -U -p -t -d\0
+options -mnUptd\0
+list\0
+
+
+Response Messages:
+------------------
+Response messages consist of a single digit response number followed by a
+space, followed by a one line message and terminated with the null character.
+
+Currently, only 0 and 1 are used as response numbers. 0 is used to indicate a
+positive reply, and 1 for negative replys. (Yes, this can be argued to be
+backwards. Think exit codes, not boolean.)
+
+Examples:
+0 Started cell successfully\0
+1 Console unavailable for given cell\0
+0 [list of cells] (see "list" command for details)\0
+
+
+Commands:
+---------
+[*] Configure a cell to automatically start (autostart)
+	The message string should consist of the name of the cell you
+	want to configure autostart for, followed by a space, followed
+	by either "on" or "off".
+
+	This command updates a cell's configuration file to specify
+	whether or not it should automatically be started when celld
+	is started using the "-a" flag.
+
+[*] Open a console (console)
+	The message string should consist of the name of the cell you're
+	requesting the console for.
+
+	This command will cause celld to return a message indicating whether
+	or not a console is available. The response code will be 0 if the
+	console can be opened and 1 if it is unavailable or no such cell 
+	exists.
+
+	If a positive response is received, celld will send the file descriptor
+	for the console over the socket.
+
+[*] Create a cell (create)
+	The message string should consist of the name of the cell to be
+	created. The name should be a "filename compatible" string (ie. No '/')
+
+	This command will set up the filesystem for a new cell.
+
+[*] Destroy a cell (destroy)
+	The message string should consist of the name of the cell to destroy.
+
+	This command will remove a cell's filesystem.
+
+	Warning: This will irrecoverably remove all data for the given
+		 cell and there is no confirmation message, so be careful.
+
+[*] Get a cell's telephony ID (getid)
+	The message string should consist of the name of the cell get the
+	ID of.
+
+	This command will retrieve the telephony ID of a cell. An ID of
+	-1 indicates that no ID has been set for the given cell.
+
+[*] List Cells (list)
+	No message string is necessary for this command.
+
+	This command will cause celld to return a list of cells and their 
+	cooresponding init pids. The list is returned as a one line message. 
+	In this message, each cell is separated by the record separator
+	character (\30) and each field of information (the cell name and the
+	pid) is separated by the unit separator character (\31).
+
+[*] Mount a cell's filesystem (mount)
+	The message string should consist of the name of the cell whose
+	filesystem you want mounted.
+
+	This command will mount a cell's unionfs filesystem and return
+	the mountpoint.
+
+[*] Switch to next cell (next)
+	No message string is necessary for this command.
+
+	Switches to the next cell, where "next" is defined as the cell
+	that was started after the currently active cell or, if the active
+	cell was the last cell started, the first cell started will be used.
+
+[*] Obtain the name of the active cell (getactive)
+	No message string is necessary for this command.
+
+	This command will send back the name of the active cell.
+
+[*] Specify options for a command (options)
+	The message string *may* be optional. Not specifying a message
+        string typically indicates a desire for defaults to be used.
+
+	This command is used for sending additional information required
+	by other commands such as "start", "create", and "setid".
+
+[*] Request to be notified when a cell becomes active (pokeme)
+	The message string should consist of the name of the cell that
+	notification should occur on (the name of the cell that 
+	becomes active).
+
+	This command will leave the connection open until the given cell has
+	become active. At such time, it will send a "Poke" message and close
+	the connection. Essentially, it causes the caller to sit and wait until
+	the given cell has been switched to.
+
+[*] Switch to previous cell (prev)
+	No message string is necessary for this command.
+
+	Switches to the previous cell, where "previous" is defined as the cell
+	that was started before the currently active cell or, if the active
+	cell was the first cell started, the last cell started will be used.
+
+[*] Set a cell to be the primary cell (primary)
+	The message string can be empty or can consist of the name of the cell
+	that is to be the primary cell. If the message is empty, the current
+	primary cell name will be sent.
+
+	Designates a cell as the primary cell. This cell will be automatically
+	switched to when auto starting. This command will configure the
+	cell to be autostarted.
+
+[*] Set a cell's telephony ID (setid)
+	The message string should consist of the name of the cell set the
+	ID of.
+
+	This command will attempt to set the telephony ID of a cell.
+	If a positive response is received, the options command should be
+	sent.
+
+	options message string:
+	The message string must consist of the new ID for the cell.
+
+[*] Start a cell (start)
+	The message string should consist of the name of the cell to start.
+
+	This command will attempt to start a cell. If a positive response is
+	received, the options command should be sent (as indicated by the
+	response message.)
+
+	options message string:
+	If non-default options are desired, the message should consist of 
+	the desired nsexec options in a format parsable by getopt.
+	For default options, the message can be left blank.
+
+	After receiving the options command, celld will attempt to start
+	the cell specified by the "start" command. If celld sends back a
+	negative response, the message will contain specific information
+	as to what the cause of the failure was.
+
+[*] Stop a cell (stop)
+	The message string should consist of the name of the cell to stop.
+
+	This command will attempt to stop a cell.
+
+[*] Switch to a different cell (switch)
+	The message string should consist of the name of the cell to switch
+	to.
+
+	This command will change the active device_ns namespace to that of
+	the cell's init process'.
+
+[*] Unmount a cell's filesystem (unmount)
+	The message string should consist of the name of the cell whose
+	filesystem you want unmounted.
+
+	This command will unmount a cell's unionfs filesystem. It will
+	refuse to do so if the cell is currently active.
+
+
+Potential Changes:
+------------------
+Terminating messages with the null character works fine in C, but causes issues
+in Java and potentially in other areas. The terminating character will probably
+be changed to the new line character soon.
