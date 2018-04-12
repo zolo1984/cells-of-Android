@@ -1,0 +1,67 @@
+基于容器原理(cell、lxc、docker)的Android双系统基础代码(Android 6.0 huawei 6p nexus)
+
+1、位于vendor目录下的cells目录
+    1)、cells --- 容器生成进程,能启动init进程
+                        其中celld是运行在主系统中的daemon进程，负责创建容器空间
+                        其中cell是celld对应的命令行程序
+                        其中hostcmd是运行在主系统中的daemon进程，负责与辅助系统交互
+                        其中vmcmd是运行在辅助系统中的daemon进程，负责与主系统交互
+    
+    2)、fingerprintd --- 指纹虚拟化
+
+    3)、Kernel_Kmsg --- 内核日志保存
+
+    4)、logcat --- ap日志保存
+
+    5)、qemuxproxy --- socket 代理，接受一个socket的数据，转发给另一个socket(双系统各设备的虚拟化核心就是接口代理、就是进程间通信，binder、socket、netlink等)
+
+    6)、SecureSystemSwitch --- 双系统切换APP，上层应用，实际功能实现在hostcmd、vmcmd中
+
+    7)、StopSystem --- 双系统切换成单系统APP，上层应用，双系统切成单系统功能，实际功能实现在hostcmd中
+
+2、位于system目录下的core目录
+    1)、adb --- adb 虚拟化，核心原理就是adb daemon 进程 互斥的运行在两个系统中
+
+    2)、init --- init 进程略微修改
+
+3、位于kernel目录下的drivers目录
+    1)、core.c --- 系统隔离初始化 drv_namespace
+
+    2)、evdev.c mousedev.c --- input 事件互斥上报
+
+    3)、veth.c --- wlan、rmnt_data 网络虚拟化必备“网线”， 请根据最新版本内核更新一下此设备，网络虚拟化借鉴了“usb共享网络”的原理
+
+    4)、alarm-dev.c --- alarm 驱动隔离
+
+    5)、binder.c --- binder 驱动隔离
+
+    6)、logger.c --- 日志 驱动隔离
+
+    7)、mdss_fb.c --- 背光灯 驱动隔离
+
+    8)、container.c --- 可废除
+
+    9)、drv_namespace.c --- 驱动隔离基础
+
+    10)、nsproxy.c --- PID 隔离
+
+3、位于hardware目录下的libhardware_legacy目录
+    1)、power.c --- wakelock 虚拟化，核心：各系统wakelock不能重命名，改名！
+
+4、frameworks目录
+    该目录针对 camera、sound、input、surfaceflinger、binder 等都有修改，太多了就不做一一解释，请用Android6.0源码对比自行理解，时间仓卒不保证质量
+
+5、位于device目录下的angler目录
+    1)、fstab.angler --- 主系统fstab，其中由于关闭selinux导致文件系统无法自动挂载,因为该文件中有selinux标签
+
+    2)、fstab.anger.cell --- 辅助系统fstab
+
+    3)、init.angler.cell.rc --- 辅助系统rc文件
+
+    4)、init.cell.rc --- 辅助系统rc文件
+
+    5)、init.rc --- 主系统rc文件
+
+    kernel ---> init(主系统) ---> init.rc ---> celld(容器生成器) ---> init(辅助系统)
+
+
