@@ -17,27 +17,10 @@ public class SecureSwitchActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.activity_main);
-		//getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-		//String v = SystemProperties.get("persist.sys.exit","0");
-		//if(!v.equals("1"))
-		//	SystemProperties.set("persist.sys.exit","1");
-		//finish();
-
-		try{
-			File f = new File("/dev/log/mdm");
-			if(!f.exists()){
-				Toast.makeText(this, " no file", Toast.LENGTH_LONG).show();
-			}
-
-            FileInputStream fin = new FileInputStream(f);
-            int length = fin.available(); 
-            byte [] buffer = new byte[length];
-            fin.read(buffer);
-            fin.close();  
-        }catch(Exception e){
-			e.printStackTrace();
-			Toast.makeText(this, " " + e, Toast.LENGTH_LONG).show();
-
-        }
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+		String v = SystemProperties.get("persist.sys.exit","0");
+		if(!v.equals("1"))
+			SystemProperties.set("persist.sys.exit","1");
+		finish();
 	}
 }
