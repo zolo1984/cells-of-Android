@@ -292,8 +292,8 @@ int main()
 	register_cmd_handle(&host_handle_message,HOST_BASE_CMD);
 
 	char value[PROPERTY_VALUE_MAX];
-    property_get("persist.sys.exit", value, "1");
-    if((strcmp(value, "0") == 0)){
+	property_get("persist.sys.exit", value, "1");
+	if((strcmp(value, "0") == 0)){
 		enter_self(true);
 	}else{
 		exit_self(true);
