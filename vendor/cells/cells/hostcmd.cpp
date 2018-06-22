@@ -127,7 +127,7 @@ static void* listen_stop_othersystem_daemon(void* o)
 	volatile uint32_t* serialaddr = (volatile uint32_t*)__system_property_find("persist.sys.stop.othersystem");
 	uint32_t serial = __system_property_serial((const prop_info *)serialaddr);
 
-    do {
+	do {
 		ALOGD("persist.sys.stop.othersystem wait serial=%d",serial);
 		syscall(__NR_futex, serialaddr, FUTEX_WAIT, serial, NULL);
 		ALOGD("persist.sys.stop.othersystem wait serialaddr=%d",*serialaddr);
@@ -137,7 +137,7 @@ static void* listen_stop_othersystem_daemon(void* o)
 		if(strcmp(value, "0") == 0){
 			return (void*)0;
 		}
-    } while ((*serialaddr) == serial);
+	} while ((*serialaddr) == serial);
 
 	{//to the other system
 		int _e = VM_BASE_CMD<<16|SYSTEM_STOP_SELF;
@@ -250,11 +250,11 @@ static void host_handle_message(struct client_message * msg,const int cmd_flag)
 {
 	switch (cmd_flag)
 	{
-	 case SYSTEM_SWITCH_ENTER:
+	case SYSTEM_SWITCH_ENTER:
 		enter_self(false);
 		break;
-	 case SYSTEM_SWITCH_EXIT:
-	 	create_exit_self_end_pthread();
+	case SYSTEM_SWITCH_EXIT:
+		create_exit_self_end_pthread();
 		break;
 	case SYSTEM_STOP_SELF:
 		stop_self();
@@ -262,7 +262,7 @@ static void host_handle_message(struct client_message * msg,const int cmd_flag)
 	case SYSTEM_VM_INIT_OK:
 		vm_init_ok();
 		break;
-	 default:
+	default:
 		break;
 	}
 };

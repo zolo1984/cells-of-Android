@@ -252,10 +252,10 @@ static void vm_handle_message(struct client_message * msg,const int cmd_flag)
 {
 	switch (cmd_flag)
 	{
-	 case SYSTEM_SWITCH_ENTER:
+	case SYSTEM_SWITCH_ENTER:
 		enter_self(false);
 		break;
-	 case SYSTEM_SWITCH_EXIT:
+	case SYSTEM_SWITCH_EXIT:
 		create_exit_self_end_pthread();
 		break;
 	case SYSTEM_STOP_SELF:
