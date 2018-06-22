@@ -127,17 +127,17 @@ static void* listen_stop_othersystem_daemon(void* o)
 	volatile uint32_t* serialaddr = (volatile uint32_t*)__system_property_find("persist.sys.stop.othersystem");
 	uint32_t serial = __system_property_serial((const prop_info *)serialaddr);
 
-    do {
+	do {
 		ALOGD("persist.sys.stop.othersystem wait serial=%d",serial);
 		syscall(__NR_futex, serialaddr, FUTEX_WAIT, serial, NULL);
 		ALOGD("persist.sys.stop.othersystem wait serialaddr=%d",*serialaddr);
 
 		char value[PROPERTY_VALUE_MAX];
-        property_get("persist.sys.stop.othersystem", value, "0");
-        if(strcmp(value, "0") == 0){
+		property_get("persist.sys.stop.othersystem", value, "0");
+		if(strcmp(value, "0") == 0){
 			return (void*)0;
 		}
-    } while ((*serialaddr) == serial);
+	} while ((*serialaddr) == serial);
 
 	{//to the other system
 		int _e = HOST_BASE_CMD<<16|SYSTEM_STOP_SELF;
@@ -154,17 +154,17 @@ static void* listen_self_daemon(void* o)
 	volatile uint32_t* serialaddr = (volatile uint32_t*)__system_property_find("persist.sys.exit");
 	uint32_t serial = __system_property_serial((const prop_info *)serialaddr);
 
-    do {
+	do {
 		ALOGD("persist.sys.exit wait serial=%d",serial);
 		syscall(__NR_futex, serialaddr, FUTEX_WAIT, serial, NULL);
 		ALOGD("persist.sys.exit wait serialaddr=%d",*serialaddr);
 
 		char value[PROPERTY_VALUE_MAX];
-        property_get("persist.sys.exit", value, "0");
-        if(strcmp(value, "0") == 0){
+		property_get("persist.sys.exit", value, "0");
+		if(strcmp(value, "0") == 0){
 			serial = *serialaddr;
 		}
-    } while ((*serialaddr) == serial);
+	} while ((*serialaddr) == serial);
 
 	exit_self(false);
 
@@ -299,8 +299,8 @@ int main()
 	register_cmd_handle(&vm_handle_message,VM_BASE_CMD);
 
 	char value[PROPERTY_VALUE_MAX];
-    property_get("persist.sys.exit", value, "1");
-    if((strcmp(value, "0") == 0)){
+	property_get("persist.sys.exit", value, "1");
+	if((strcmp(value, "0") == 0)){
 		enter_self(true);
 	}else{
 		exit_self(true);
