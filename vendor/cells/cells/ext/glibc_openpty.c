@@ -40,44 +40,44 @@ pts_name (int fd, char **pts, size_t buf_len)
   char *buf = *pts;
 
   for (;;)
-    {
-      char *new_buf;
+	{
+	  char *new_buf;
 
-      if (buf_len)
+	  if (buf_len)
 	{
 	  rv = ptsname_r (fd, buf, buf_len);
 
 	  if (rv != 0 || memchr (buf, '\0', buf_len))
-	    /* We either got an error, or we succeeded and the
-	       returned name fit in the buffer.  */
-	    break;
+		/* We either got an error, or we succeeded and the
+		   returned name fit in the buffer.  */
+		break;
 
 	  /* Try again with a longer buffer.  */
 	  buf_len += buf_len;	/* Double it */
 	}
-      else
+	  else
 	/* No initial buffer; start out by mallocing one.  */
 	buf_len = 128;		/* First time guess.  */
 
-      if (buf != *pts)
+	  if (buf != *pts)
 	/* We've already malloced another buffer at least once.  */
 	new_buf = realloc (buf, buf_len);
-      else
+	  else
 	new_buf = malloc (buf_len);
-      if (! new_buf)
+	  if (! new_buf)
 	{
 	  rv = -1;
 	  //__set_errno (ENOMEM);
 	  errno = -ENOMEM;
 	  break;
 	}
-      buf = new_buf;
-    }
+	  buf = new_buf;
+	}
 
   if (rv == 0)
-    *pts = buf;		/* Return buffer to the user.  */
+	*pts = buf;		/* Return buffer to the user.  */
   else if (buf != *pts)
-    free (buf);		/* Free what we malloced when returning an error.  */
+	free (buf);		/* Free what we malloced when returning an error.  */
 
   return rv;
 }
@@ -99,39 +99,39 @@ openpty (int *amaster, int *aslave, char *name,
 
   master = getpt ();
   if (master == -1)
-    return -1;
+	return -1;
 
   if (grantpt (master))
-    goto fail;
+	goto fail;
 
   if (unlockpt (master))
-    goto fail;
+	goto fail;
 
   if (pts_name (master, &buf, sizeof (_buf)))
-    goto fail;
+	goto fail;
 
   slave = open (buf, O_RDWR | O_NOCTTY);
   if (slave == -1)
-    {
-      if (buf != _buf)
+	{
+	  if (buf != _buf)
 	free (buf);
 
-      goto fail;
-    }
+	  goto fail;
+	}
 
   /* XXX Should we ignore errors here?  */
   if(termp)
-    tcsetattr (slave, TCSAFLUSH, termp);
+	tcsetattr (slave, TCSAFLUSH, termp);
   if (winp)
-    ioctl (slave, TIOCSWINSZ, winp);
+	ioctl (slave, TIOCSWINSZ, winp);
 
   *amaster = master;
   *aslave = slave;
   if (name != NULL)
-    strcpy (name, buf);
+	strcpy (name, buf);
 
   if (buf != _buf)
-    free (buf);
+	free (buf);
   return 0;
 
  fail:

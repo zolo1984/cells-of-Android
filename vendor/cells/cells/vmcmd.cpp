@@ -309,5 +309,5 @@ int main()
 	init_ok();
 
 	create_server_daemon(0);
-    return 0;
+	return 0;
 };

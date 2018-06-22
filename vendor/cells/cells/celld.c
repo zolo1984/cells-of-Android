@@ -5,8 +5,8 @@
  *
  * Copyright (C) 2010-2013 Columbia University
  * Authors: Christoffer Dall <cdall@cs.columbia.edu>
- *          Jeremy C. Andrus <jeremya@cs.columbia.edu>
- *          Alexander Van't Hof <alexvh@cs.columbia.edu>
+ *		  Jeremy C. Andrus <jeremya@cs.columbia.edu>
+ *		  Alexander Van't Hof <alexvh@cs.columbia.edu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -137,7 +137,7 @@ static struct cell_node *search_cells_pid(int pid, struct cell_list *list)
 	while (cell != NULL) {
 		if (read_config(cell->name, &config) == 0)
 			if (config.initpid == pid ||
-			    config.restart_pid == pid)
+				config.restart_pid == pid)
 				break;
 		cell = cell->next;
 	}
@@ -154,7 +154,7 @@ __get_next_or_prev_cell(struct cell_node *cur, int next)
 	/* Lock the list so no changes can be made to cur->next/prev */
 	pthread_mutex_lock(&g_cell_list.mutex);
 	if (cur == NULL ||
-	    (cur->next == NULL && cur->prev == NULL)) {
+		(cur->next == NULL && cur->prev == NULL)) {
 		goto err_get_next_or_prev_cell;
 	}
 	if (next) {
@@ -200,7 +200,7 @@ create_cell_node(char *name, struct config_info *config,
 	if (n >= MAX_NAME_LEN || n < 0) {
 		free(new);
 		ALOGE("invalid cell name (must be < %d chars): \"%s\"",
-		     MAX_NAME_LEN, name);
+			 MAX_NAME_LEN, name);
 		return NULL;
 	}
 	memcpy(&new->console_pty, console_pty, sizeof(*console_pty));
@@ -302,10 +302,10 @@ char *get_socket_path(char *name)
 static const char *rootfs_excludes[] = {
 	"storage",
 	/* add host file,don't copy,use cell's file */
-    /*"init.rc",
-    "init.project.rc", 
-    "fstab.qcom",
-    "init.usb.rc",
+	/*"init.rc",
+	"init.project.rc", 
+	"fstab.qcom",
+	"init.usb.rc",
 	"init.qcom.rc",
 	"init.target.rc",*/
 	NULL
@@ -315,24 +315,24 @@ void rename_cells_file(const char *root_path)
 {
 	char newpath[PATH_MAX];
 	char oldpath[PATH_MAX];
-    const char *cells_file[][25] = {
+	const char *cells_file[][25] = {
 	{"init.cell.rc", "init.rc"},
 	{"init.angler.cell.rc", "init.angler.rc"},
 	{"fstab.angler.cell", "fstab.angler"},
-    {NULL, NULL}
-    };  
-    int i;
-    int ret = 0;
+	{NULL, NULL}
+	};
+	int i;
+	int ret = 0;
 
-    for (i = 0; cells_file[i][0] != NULL; i++) {
-        snprintf(oldpath, PATH_MAX, "%s/%s", root_path, cells_file[i][0]);        
-        snprintf(newpath, PATH_MAX, "%s/%s", root_path, cells_file[i][1]);
-        ret += rename(oldpath, newpath);
-    }
+	for (i = 0; cells_file[i][0] != NULL; i++) {
+		snprintf(oldpath, PATH_MAX, "%s/%s", root_path, cells_file[i][0]);		
+		snprintf(newpath, PATH_MAX, "%s/%s", root_path, cells_file[i][1]);
+		ret += rename(oldpath, newpath);
+	}
 
-    if (ret != 0) {
-        ALOGE("[rename_cells_file] fail!\n");
-    }
+	if (ret != 0) {
+		ALOGE("[rename_cells_file] fail!\n");
+	}
 }
 void copyfs_callback(void *ctx, const char *path, const char *subpath, struct dirent *e)
 {
@@ -442,7 +442,7 @@ static int mount_rootfs(const char *root_path)
 	ret += walkdir((void *)root_path, CELL_ROOT_BASE, CELL_SBIN, 100, copyfs_callback);
 	ret += walkdir((void *)root_path, CELL_ROOT_BASE, CELL_ROOT_DIR, 100, copyfs_callback);
 	if (ret) {
-        ALOGE("walkdir copy fail! umount...");
+		ALOGE("walkdir copy fail! umount...");
 		umount(root_path);
 		return ret;
 	}
@@ -503,7 +503,7 @@ static int mount_systemfs(const char *root_path, const char *rw_path)
 		goto out;
 
 	ALOGD("Performing aufs mount on %s: options='%s'",
-	     system_path, mount_opts);
+		 system_path, mount_opts);
 	ret = mount("none", system_path, "aufs", 0, mount_opts);
 	s_errno = errno;
 out:
@@ -528,8 +528,8 @@ static int mount_systemfs(const char *root_path, const char *rw_path)
 		return -1;
 	}
 	//sprintf(system_src, "%s/system", rw_path);
-    	//sprintf(system_src, "/data/system_bak");
-    sprintf(system_src, "/system");
+		//sprintf(system_src, "/data/system_bak");
+	sprintf(system_src, "/system");
 
 	ret = 0;
 	if (is_mounted(system_path))
@@ -560,8 +560,8 @@ static int mount_vendorfs(const char *root_path, const char *rw_path)
 		return -1;
 	}
 	//sprintf(system_src, "%s/system", rw_path);
-    	//sprintf(system_src, "/data/system_bak");
-    sprintf(system_src, "/vendor");
+		//sprintf(system_src, "/data/system_bak");
+	sprintf(system_src, "/vendor");
 
 	ret = 0;
 	if (is_mounted(system_path))
@@ -584,7 +584,7 @@ static int mount_sdcard(const char *name, const char *root_path,
 {
 	int ret, s_errno;
 	char *src, *dst;
-    	char path1[PATH_MAX], path2[PATH_MAX];
+		char path1[PATH_MAX], path2[PATH_MAX];
 
 	/* +10: '//sdcard0\0' */
 	src = malloc(strlen(g_sdcard_root) + strlen(name) + 10);
@@ -607,7 +607,7 @@ static int mount_sdcard(const char *name, const char *root_path,
 
 	snprintf(path1, PATH_MAX, "%s/mnt", rw_path);
 	snprintf(path2, PATH_MAX, "%s/mnt", root_path);
-    
+	
 	ret = mount(path1, path2, NULL, MS_BIND, NULL);
 	if (ret < 0) {
 		printf("mount /mnt fail!\n");
@@ -621,9 +621,9 @@ out:
 	free(src);
 	free(dst);
 	if (ret < 0) {
-        printf("mount sd fail!\n");
-        errno = s_errno;
-    }
+		printf("mount sd fail!\n");
+		errno = s_errno;
+	}
 	return ret;
 }
 
@@ -789,7 +789,7 @@ static int finish_cell_startup(char *name)
 	delta = tv_to_usec(&stop_time) - tv_to_usec(&cell->start_time);
 	usec_to_tv(&stop_time, delta);
 	ALOGI("start(%s) duration: %ld seconds %ld microsec",
-	     name, stop_time.tv_sec, stop_time.tv_usec);
+		 name, stop_time.tv_sec, stop_time.tv_usec);
 	return 0;
 }
 
@@ -902,7 +902,7 @@ static void monitor_start_state(struct cell_node *cell, int pid,
 		close(child_fd);
 	} else {
 		ALOGI("thread %d monitoring start %s(%d) state",
-		      (int)pthread_gettid_np(tid), cms->name, cms->pid);
+			  (int)pthread_gettid_np(tid), cms->name, cms->pid);
 	}
 }
 
@@ -962,12 +962,12 @@ static int create_cell_dirs(const char *name, int warn)
 		snprintf(dpath, sizeof(dpath), "%s/%s", rw_path, pdir);
 		if (mkdir(dpath, 0755) == -1 && errno != EEXIST)
 			ALOGE("mkdir %s failed(%d): %s", dpath, errno,
-			     strerror(errno));
-        if ((i == 1) || (i == 2)) {
-            /* "mnt/media_rw" and "mnt/media_rw/sdcardv" need chown to make cell can access */
-            snprintf(dpath, sizeof(dpath), "chown media_rw:media_rw %s/%s ", rw_path, pdir);
-            system(dpath);
-        }
+				 strerror(errno));
+		if ((i == 1) || (i == 2)) {
+			/* "mnt/media_rw" and "mnt/media_rw/sdcardv" need chown to make cell can access */
+			snprintf(dpath, sizeof(dpath), "chown media_rw:media_rw %s/%s ", rw_path, pdir);
+			system(dpath);
+		}
 	}
 
 	/* attempt to ensure that the bind-mounted sdcard directory will be
@@ -1069,11 +1069,11 @@ static void list_cells(int fd, int mask)
 
 		if (s & mask && s & CELL_RUNNING_MASK) {
 			n = snprintf(cur, n_avail, "%s\31%s\31%i\30",
-				     name_list[i], status_to_name(s),
-				     cell->init_pid);
+					 name_list[i], status_to_name(s),
+					 cell->init_pid);
 		} else if (s & mask) {
 			n = snprintf(cur, n_avail, "%s\31%s\30",
-				     name_list[i], status_to_name(s));
+					 name_list[i], status_to_name(s));
 		} else {
 			ALOGE("Unknown state!");
 			n = 0;
@@ -1402,7 +1402,7 @@ static void do_create(int fd, struct cell_cmd_arg *cmd_args)
 
 /* Returns the newly created cell_node on success. NULL on failure */
 static struct cell_node *__do_start(int fd, char *name,
-				    struct cell_start_args *args)
+					struct cell_start_args *args)
 {
 	int pid = -1;
 	int config_ret, proc_fd;
@@ -1485,8 +1485,8 @@ static struct cell_node *__do_start(int fd, char *name,
 	}
 
 	monitor_start_state(new, pid,
-			    cell_args.child_pipe[0],
-			    cell_args.init_pipe[1]);
+				cell_args.child_pipe[0],
+				cell_args.init_pipe[1]);
 
 	return new;
 }
@@ -1718,7 +1718,7 @@ static void do_console(int fd, struct cell_cmd_arg *args)
 
 	if (send_fd(fd, cell->console_pty.ptm) == -1)
 		ALOGE("Failed to send console file descriptor: %s",
-		     strerror(errno));
+			 strerror(errno));
 
 err_do_console:
 	ALOGI("Finished console for %s", name);
@@ -1849,7 +1849,7 @@ static void do_runcmd(int fd, struct cell_cmd_arg *cmd_args)
 	}
 
 	if (send_msg(fd, "0 %s L %4d%s",
-		     CONSOLE_READY_MSG, cmdlen+1, args->cmd) == -1) {
+			 CONSOLE_READY_MSG, cmdlen+1, args->cmd) == -1) {
 		ALOGE("Error sending command");
 		goto err;
 	}
@@ -1865,7 +1865,7 @@ static void do_runcmd(int fd, struct cell_cmd_arg *cmd_args)
 
 	if (send_fd(fd, cell->console_pty.ptm) == -1)
 		ALOGE("Failed to send console file descriptor: %s",
-		     strerror(errno));
+			 strerror(errno));
 
 err:
 	pthread_mutex_unlock(&g_cell_list.mutex);
@@ -2177,14 +2177,14 @@ static int try_reattach(void)
 			continue;
 
 		ALOGI("Trying to re-attach to cell '%s' (init=%d)",
-		     name_list[i], config.initpid);
+			 name_list[i], config.initpid);
 		ret = is_running(config.initpid, "/init");
 		if (!ret) {
 			/* Fix the config to indicate cell has stopped */
 			config.initpid = -1;
 			write_config(name_list[i], &config);
 			ALOGI("cell '%s' doesn't appear to be running",
-			      name_list[i]);
+				  name_list[i]);
 			continue;
 		} else if (ret == -1) {
 			free_cell_names(name_list);
@@ -2200,7 +2200,7 @@ static int try_reattach(void)
 		new->starting = 0;
 		new->non_child = 1;
 		ALOGI("Re-attached to cell '%s' (init_pid = %d)",
-		     name_list[i], config.initpid);
+			 name_list[i], config.initpid);
 	}
 	free_cell_names(name_list);
 	return 0;
@@ -2315,7 +2315,7 @@ static int __autostart_cells(void)
 		cell = celld_auto_start_cell(name_list[i]);
 		if (cell == NULL) {
 			ALOGE("failed to start %s (attempt=%d)",
-			     name_list[i], aci->attempts);
+				 name_list[i], aci->attempts);
 			pthread_mutex_unlock(&g_cell_list.mutex);
 			continue;
 		}
@@ -2453,13 +2453,13 @@ static void *cell_exit_handler(void *unused)
 		pid = waitpid(-1, &status, WNOHANG); /* -1 == WAIT_ANY */
 		if (pid == 0 || pid < 0) {
 			ALOGD("%s: waitpid out pid: %d, %s", __func__,
-			     pid, strerror(errno));
+				 pid, strerror(errno));
 			break;
 		}
 		exit_status = WEXITSTATUS(status);
 		exit_signal = WTERMSIG(status);
 		ALOGD("%d exit %s (sig=%d)",
-		     pid, (exit_status ? "ERROR" : "SUCCESS"), exit_signal);
+			 pid, (exit_status ? "ERROR" : "SUCCESS"), exit_signal);
 		list = &g_dead_cell_list;
 		cell = search_cells_pid(pid, list);
 		if (!cell) {
@@ -2472,7 +2472,7 @@ static void *cell_exit_handler(void *unused)
 			}
 		}
 		ALOGI("Cell %s terminated by sig %d (%s)", cell->name, status,
-		     (exit_status ? "ERROR" : "SUCCESS"));
+			 (exit_status ? "ERROR" : "SUCCESS"));
 
 		root_path = get_root_path(cell->name);
 		if (!root_path) {
@@ -2628,21 +2628,21 @@ out_err:
 static void print_usage(const char *name)
 {
 	static const char *usage = "\
-    -a             Automatically start cells with autostart enabled\n\
-    -c <dir>       Set Cells directory to <dir> \n\
-                           (default: "DEFL_CELL_DIR")\n\
-    -s <dir>       Set cell SDCARD directory to <dir> \n\
-                           (default: "DEFL_SDCARD_ROOT")\n\
-    -F             Run in foreground. don't daemonize.\n\
-    -M <path>      Load the system module at <path> before continuing.\n\
-                           pass multiple -M to load multiple modules.\n\
-    -r             celld will attempt to \"re-attach\" to previously\n\
-                   running cells (eg. after celld has restarted)\n\
-    -p             Collects power info while running. Info saved\n\
-                   to /data/power_info. 10 second polling.\n\
-    -P             Only collects power_info. The rest of celld\n\
-                   does not run. Use for stock images\n\
-    -h             displays this message\n";
+	-a			 Automatically start cells with autostart enabled\n\
+	-c <dir>	   Set Cells directory to <dir> \n\
+						   (default: "DEFL_CELL_DIR")\n\
+	-s <dir>	   Set cell SDCARD directory to <dir> \n\
+						   (default: "DEFL_SDCARD_ROOT")\n\
+	-F			 Run in foreground. don't daemonize.\n\
+	-M <path>	  Load the system module at <path> before continuing.\n\
+						   pass multiple -M to load multiple modules.\n\
+	-r			 celld will attempt to \"re-attach\" to previously\n\
+				   running cells (eg. after celld has restarted)\n\
+	-p			 Collects power info while running. Info saved\n\
+				   to /data/power_info. 10 second polling.\n\
+	-P			 Only collects power_info. The rest of celld\n\
+				   does not run. Use for stock images\n\
+	-h			 displays this message\n";
 
 	printf("Usage: %s [options]\n", name);
 	printf("%s", usage);
@@ -2718,10 +2718,10 @@ int main(int argc, char **argv)
 
 	/*
 	 * Initialize Radio Interface Layer (RIL)
-	 *     (*) possibly load custom library
-	 *     (*) setup proxy host
-	 *     (*) pass
-	 *     (*) custom arguments to rild
+	 *	 (*) possibly load custom library
+	 *	 (*) setup proxy host
+	 *	 (*) pass
+	 *	 (*) custom arguments to rild
 	 */
 
 	/* Setup SIGCHLD handler and ignore SIGPIPEs */

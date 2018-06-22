@@ -5,8 +5,8 @@
  *
  * Copyright (C) 2010-2013 Columbia University
  * Authors: Christoffer Dall <cdall@cs.columbia.edu>
- *          Jeremy C. Andrus <jeremya@cs.columbia.edu>
- *          Alexander Van't Hof <alexvh@cs.columbia.edu>
+ *		  Jeremy C. Andrus <jeremya@cs.columbia.edu>
+ *		  Alexander Van't Hof <alexvh@cs.columbia.edu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -124,8 +124,8 @@ static int rmtree_real(const char *path, int max_depth)
 	}
 	/* path is a directory. Iterate through its files */
 	for (ret = readdir_r(dir, &entry, &result);
-	     ret == 0 && result != NULL;
-	     ret = readdir_r(dir, &entry, &result))
+		 ret == 0 && result != NULL;
+		 ret = readdir_r(dir, &entry, &result))
 	{
 		if (!strcmp(entry.d_name, ".") || !strcmp(entry.d_name, ".."))
 			continue;
@@ -156,7 +156,7 @@ int rmtree(const char *path)
 }
 
 int walkdir(void *ctx, const char *base, const char *sdir, int depth,
-	    void (*callback)(void *ctx, const char *path, const char *subpath, struct dirent *e))
+		void (*callback)(void *ctx, const char *path, const char *subpath, struct dirent *e))
 {
 	int ret;
 	DIR *dir;
@@ -169,18 +169,18 @@ int walkdir(void *ctx, const char *base, const char *sdir, int depth,
 	if (!callback)
 		return -1;
 
-    snprintf(path, FILENAME_MAX, "%s%s", base, sdir);
+	snprintf(path, FILENAME_MAX, "%s%s", base, sdir);
 	dir = opendir(path);
 	if (!dir)
 		return -1;
 
 	for (ret = readdir_r(dir, &entry, &result);
-	     ret == 0 && result != NULL;
-	     ret = readdir_r(dir, &entry, &result))
+		 ret == 0 && result != NULL;
+		 ret = readdir_r(dir, &entry, &result))
 	{
 		if (!strcmp(entry.d_name, ".") || !strcmp(entry.d_name, ".."))
 			continue;
-		snprintf(full_name, FILENAME_MAX, "%s/%s", path, entry.d_name);        
+		snprintf(full_name, FILENAME_MAX, "%s/%s", path, entry.d_name);		
 		snprintf(subpath, FILENAME_MAX, "%s/%s", sdir, entry.d_name);
 		callback(ctx, full_name, subpath, &entry);
 		if (depth && entry.d_type == DT_DIR) {
@@ -216,7 +216,7 @@ int copy_file(const char *src, const char *dst)
 
 	if (lstat(dst, &dst_stat) == 0) {
 		if (src_stat.st_dev == dst_stat.st_dev &&
-		    src_stat.st_ino == dst_stat.st_ino) {
+			src_stat.st_ino == dst_stat.st_ino) {
 			ALOGE("'%s' and '%s' are the same file!", src, dst);
 			return -1;
 		}
@@ -286,9 +286,9 @@ void close_fds(void)
 	/* Close all file descriptors */
 	int i;
 
-    /* gwb: the getdtablesize functions has been deprecated by Posix and 
-                   has been removed from Android's LB64 ABI
-                   Replace calls to it with the modern equivalent sysconf(_SC_OPEN_MAX) */
+	/* gwb: the getdtablesize functions has been deprecated by Posix and 
+				   has been removed from Android's LB64 ABI
+				   Replace calls to it with the modern equivalent sysconf(_SC_OPEN_MAX) */
 	//for (i = getdtablesize(); i >= 0; --i)   
 	for (i = sysconf(_SC_OPEN_MAX); i >= 0; --i)
 		close(i);
@@ -419,7 +419,7 @@ int __unmount_dir(const char *root_path, char *dir)
 		if (strncmp(mount_path, extra_path, extra_path_len-1) == 0) {
 			if (umount(mount_path) < 0) {
 				ALOGE("Error unmounting %s: %s",
-				      mount_path, strerror(errno));
+					  mount_path, strerror(errno));
 				err -= 1;
 			} else
 				++nr;
@@ -441,7 +441,7 @@ out:
 }
 
 static int init_module(const char *mod_image, unsigned long image_len,
-		       const char *mod_params)
+			   const char *mod_params)
 {
 	return syscall(__NR_init_module, mod_image, image_len, mod_params);
 }
@@ -484,7 +484,7 @@ int insert_module(const char *path, const char *params)
 
 	elfhdr = (const char *)image;
 	if ( !(elfhdr[0] == 0x7F &&
-	       elfhdr[1] == 'E' && elfhdr[2] == 'L' && elfhdr[3] == 'F')) {
+		   elfhdr[1] == 'E' && elfhdr[2] == 'L' && elfhdr[3] == 'F')) {
 		ALOGE("Invalid ELF signature in '%s' - compressed?", path);
 		goto out_err;
 	}

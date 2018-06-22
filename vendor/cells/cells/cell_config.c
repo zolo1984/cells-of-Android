@@ -5,8 +5,8 @@
  *
  * Copyright (C) 2010-2013 Columbia University
  * Authors: Christoffer Dall <cdall@cs.columbia.edu>
- *          Jeremy C. Andrus <jeremya@cs.columbia.edu>
- *          Alexander Van't Hof <alexvh@cs.columbia.edu>
+ *		  Jeremy C. Andrus <jeremya@cs.columbia.edu>
+ *		  Alexander Van't Hof <alexvh@cs.columbia.edu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@ extern char *g_cell_dir;
 static char *get_config_path(char *name)
 {
 	char *config_path = malloc(strlen(g_cell_dir) + strlen(name) +
-			    strlen(CONFIG_DIR) + 8); /* +8 for '//.conf\0' */
+				strlen(CONFIG_DIR) + 8); /* +8 for '//.conf\0' */
 	if (config_path == NULL) {
 		ALOGE("Failed to malloc for config_path: %s", strerror(errno));
 		return NULL;
@@ -174,7 +174,7 @@ int read_config(char *name, struct config_info *config)
 	/* Generate sscanf format string so that we can use MAX_MSG_LEN */
 	/* aka a lot of complication just to utilize #defs */
 	if (snprintf(scanf_fmt, 25, "%%%ds %%%d[^\n]s",
-		     MAX_CONFIG_KEY_LEN-1, MAX_MSG_LEN) >= 25) {
+			 MAX_CONFIG_KEY_LEN-1, MAX_MSG_LEN) >= 25) {
 		/* Never gonna happen... */
 		ALOGE("How big are the #def LENs!? geeesh...");
 		goto err_read_config;
@@ -314,8 +314,8 @@ char **get_cell_names(void)
 
 	/* Go through every file in the config directory to find configs */
 	for (ret = readdir_r(dir, &entry, &result);
-	     ret == 0 && result != NULL;
-	     ret = readdir_r(dir, &entry, &result))
+		 ret == 0 && result != NULL;
+		 ret = readdir_r(dir, &entry, &result))
 	{
 		/* Verify it's a config file - ignore others */
 		dot_pos = strrchr(entry.d_name, '.');

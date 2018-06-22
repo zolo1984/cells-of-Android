@@ -3,8 +3,8 @@
  *
  * Copyright (C) 2010-2013 Columbia University
  * Authors: Christoffer Dall <cdall@cs.columbia.edu>
- *          Jeremy C. Andrus <jeremya@cs.columbia.edu>
- *          Alexander Van't Hof <alexvh@cs.columbia.edu>
+ *		  Jeremy C. Andrus <jeremya@cs.columbia.edu>
+ *		  Alexander Van't Hof <alexvh@cs.columbia.edu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,7 +31,7 @@ extern void tear_down_cell(struct cell_args *args,
 			   struct pty_info *console_pty);
 
 extern int cell_nsexec(int sd, struct cell_args *args,
-		       char *name, struct pty_info *pty);
+			   char *name, struct pty_info *pty);
 
 extern char *create_cgroup(char *cellname);
 

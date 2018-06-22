@@ -33,7 +33,7 @@
 #include "nl.h"
 
 #define NLMSG_TAIL(nmsg) \
-        ((struct rtattr *) (((void *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
+		((struct rtattr *) (((void *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
 
 extern size_t nlmsg_len(const struct nlmsg *nlmsg)
 {
@@ -203,7 +203,7 @@ again:
 		return 0;
 
 	if (msg.msg_flags & MSG_TRUNC &&
-	    ret == answer->nlmsghdr->nlmsg_len)
+		ret == answer->nlmsghdr->nlmsg_len)
 		return -EMSGSIZE;
 
 	return ret;
@@ -237,10 +237,10 @@ extern int netlink_send(struct nl_handler *handler, struct nlmsg *nlmsg)
 }
 
 #ifndef NLMSG_ERROR
-#define NLMSG_ERROR                0x2
+#define NLMSG_ERROR				0x2
 #endif
 extern int netlink_transaction(struct nl_handler *handler,
-			       struct nlmsg *request, struct nlmsg *answer)
+				   struct nlmsg *request, struct nlmsg *answer)
 {
 	int ret;
 
@@ -273,11 +273,11 @@ extern int netlink_open(struct nl_handler *handler, int protocol)
 		return -errno;
 
 	if (setsockopt(handler->fd, SOL_SOCKET, SO_SNDBUF,
-		       &sndbuf, sizeof(sndbuf)) < 0)
+			   &sndbuf, sizeof(sndbuf)) < 0)
 		return -errno;
 
 	if (setsockopt(handler->fd, SOL_SOCKET, SO_RCVBUF,
-		       &rcvbuf,sizeof(rcvbuf)) < 0)
+			   &rcvbuf,sizeof(rcvbuf)) < 0)
 		return -errno;
 
 	memset(&handler->local, 0, sizeof(handler->local));

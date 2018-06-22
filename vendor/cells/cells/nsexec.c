@@ -6,8 +6,8 @@
  *
  * Copyright (C) 2010-2013 Columbia University
  * Authors: Christoffer Dall <cdall@cs.columbia.edu>
- *          Jeremy C. Andrus <jeremya@cs.columbia.edu>
- *          Alexander Van't Hof <alexvh@cs.columbia.edu>
+ *		  Jeremy C. Andrus <jeremya@cs.columbia.edu>
+ *		  Alexander Van't Hof <alexvh@cs.columbia.edu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -60,22 +60,22 @@
 
 /* Linux clone flags not available in bionic's kernel headers */
 #ifndef CLONE_NEWUTS
-#define CLONE_NEWUTS            0x04000000      /* New utsname group? */
+#define CLONE_NEWUTS			0x04000000	  /* New utsname group? */
 #endif
 #ifndef CLONE_NEWIPC
-#define CLONE_NEWIPC            0x08000000      /* New ipcs */
+#define CLONE_NEWIPC			0x08000000	  /* New ipcs */
 #endif
 #ifndef CLONE_NEWUSER
-#define CLONE_NEWUSER           0x10000000      /* New user namespace */
+#define CLONE_NEWUSER		   0x10000000	  /* New user namespace */
 #endif
 #ifndef CLONE_NEWPID
-#define CLONE_NEWPID            0x20000000      /* New pid namespace */
+#define CLONE_NEWPID			0x20000000	  /* New pid namespace */
 #endif
 #ifndef CLONE_NEWNET
-#define CLONE_NEWNET            0x40000000      /* New network namespace */
+#define CLONE_NEWNET			0x40000000	  /* New network namespace */
 #endif
 #ifndef CLONE_IO
-#define CLONE_IO                0x80000000      /* Clone io context */
+#define CLONE_IO				0x80000000	  /* Clone io context */
 #endif
 
 static void config_host_net_work(int pid)
@@ -193,7 +193,7 @@ int move_to_new_cgroup(struct cell_args *args)
 	fclose(fout);
 
 	ALOGI("Moved %s (%d) into new cgroup (%s)",
-	     args->cellname, args->init_pid, cgroupname);
+		 args->cellname, args->init_pid, cgroupname);
 	ret = 0;
 out:
 	free(cgroupname);
@@ -274,7 +274,7 @@ static int do_child(void *vargv)
 	close(cell_args->cell_socket);
 
 	ALOGI("%s: do_child, mnt_rootfs:%d, rootdir=%s",
-	      cellname, start_args->mnt_rootfs, rootdir);
+		  cellname, start_args->mnt_rootfs, rootdir);
 
 	/* chroot... */
 	if (chroot(rootdir)) {
@@ -352,7 +352,7 @@ static int do_child(void *vargv)
 	if(vmfd>=0){
 		char value[PROPERTY_VALUE_MAX]; 
 		property_get("persist.sys.exit", value, "1");
-        if (strcmp(value, "0") == 0) {
+		if (strcmp(value, "0") == 0) {
 			write(vmfd,"1",strlen("1"));
 		}else{
 			write(vmfd,"0",strlen("0"));
@@ -539,7 +539,7 @@ int cell_nsexec(int sd, struct cell_args *cell_args,
 	/* pipes to synchronize child start and CellD monitoring */
 	if (pipe(cell_args->child_pipe) || pipe(cell_args->init_pipe)) {
 		ALOGE("Can't create child/init pipes for '%s': %s",
-		      name, strerror(errno));
+			  name, strerror(errno));
 		send_msg(sd, "1 nsexec failed: child/init pipe creating failed");
 		goto err_cleanup;
 	}
@@ -568,7 +568,7 @@ int cell_nsexec(int sd, struct cell_args *cell_args,
 		int ret = create_cell_console(rootdir, console_pty);
 		if (ret < 0) {
 			ALOGE("Couldn't open console in '%s'. "
-			      "Continuing nsexec..", name);
+				  "Continuing nsexec..", name);
 			console_pty->ptm = -1;
 		}
 	} else

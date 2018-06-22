@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2010-2013 Columbia University
  * Authors: Christoffer Dall <cdall@cs.columbia.edu>
- *          Jeremy C. Andrus <jeremya@cs.columbia.edu>
+ *		  Jeremy C. Andrus <jeremya@cs.columbia.edu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,9 +26,9 @@
 #define PATH_MAX 4096
 
 struct pty_info {
-	int  ptm;			/* Master pts file descriptor         */
-	int  pty;			/* Slave file descriptor              */
-	char name[PATH_MAX];		/* Path to slave in host /dev/pts     */
+	int  ptm;			/* Master pts file descriptor		 */
+	int  pty;			/* Slave file descriptor			  */
+	char name[PATH_MAX];		/* Path to slave in host /dev/pts	 */
 	char cont_path[PATH_MAX];	/* Host path to file inside container */
 };
 

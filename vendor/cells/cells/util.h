@@ -3,8 +3,8 @@
  *
  * Copyright (C) 2010-2013 Columbia University
  * Authors: Christoffer Dall <cdall@cs.columbia.edu>
- *          Jeremy C. Andrus <jeremya@cs.columbia.edu>
- *          Alexander Van't Hof <alexvh@cs.columbia.edu>
+ *		  Jeremy C. Andrus <jeremya@cs.columbia.edu>
+ *		  Alexander Van't Hof <alexvh@cs.columbia.edu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,7 +37,7 @@ void daemonize(void);
 void close_fds(void);
 int rmtree(const char *path);
 int walkdir(void *ctx, const char *base, const char *sdir, int depth,
-	    void (*callback)(void *ctx, const char *path, const char *subpath, struct dirent *e));
+		void (*callback)(void *ctx, const char *path, const char *subpath, struct dirent *e));
 int copy_file(const char *src, const char *dst);
 
 int is_mounted(const char *path);

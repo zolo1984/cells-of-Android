@@ -1,6 +1,6 @@
 
 /*
-    use for two system communication
+	use for two system communication
 */
 #ifndef CELL_SOCKET_H
 #define CELL_SOCKET_H
@@ -18,10 +18,10 @@
 struct client_message {
 	uint32_t _socket;
 
-    uint32_t _rec_msg_len;
+	uint32_t _rec_msg_len;
 	void *_rec_msg;
 
-    uint32_t _send_msg_len;
+	uint32_t _send_msg_len;
 	void *_send_msg;
 };
 

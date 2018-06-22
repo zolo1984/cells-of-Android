@@ -57,7 +57,7 @@ static void *handle_client_message(void *opaque)
 		if(handle_message_vector[handle_flag])
 			(*handle_message_vector[handle_flag])(client_msg,cmd_flag);
 	}
-    ALOGD("handle_client_message end send_msg_len[%d]", client_msg->_send_msg_len);
+	ALOGD("handle_client_message end send_msg_len[%d]", client_msg->_send_msg_len);
 
 	/* Send the now prepared reply */
 	send_buf = (char*)client_msg->_send_msg;
@@ -66,7 +66,7 @@ static void *handle_client_message(void *opaque)
 		ret = send(client_msg->_socket, send_buf, send_count, 0);
 		if (ret <= 0) {
 			ALOGE(" handle_client_message send reply: "
-			      "ERROR(%d) %s", errno, strerror(errno));
+				  "ERROR(%d) %s", errno, strerror(errno));
 			break;
 		}
 		send_count -= ret;
@@ -162,7 +162,7 @@ static void listen_server_daemon(int daemon_fd)
 			c_message = (struct client_message *)malloc(sizeof(*c_message));
 			if (!c_message) {
 				ALOGE("malloc client_message: "
-				      "err(%d) %s", errno, strerror(errno));
+					  "err(%d) %s", errno, strerror(errno));
 				free(message);
 				close(cmd_socket);
 				goto out_err;
@@ -176,10 +176,10 @@ static void listen_server_daemon(int daemon_fd)
 
 			/* TODO: keep track of these threads */
 			ret = pthread_create(&handle_thread, NULL,
-					     handle_client_message, (void *)c_message);
+						 handle_client_message, (void *)c_message);
 			if (ret) {
 				ALOGE("pthread_create handle_thread: "
-				      "ERROR(%d) %s", errno, strerror(errno));
+					  "ERROR(%d) %s", errno, strerror(errno));
 				free(message);
 				free(c_message);
 				close(cmd_socket);
@@ -187,7 +187,7 @@ static void listen_server_daemon(int daemon_fd)
 			}
 		} else {
 			ALOGE("Could not receive entire message "
-			      "(missing %u bytes)", rec_count);
+				  "(missing %u bytes)", rec_count);
 			free(message);
 			close(cmd_socket);
 		}
@@ -295,17 +295,17 @@ static int send_buf(int fd, void *data, size_t len)
 
 static int recv_reply(int fd, size_t *len, char *msg)
 {
-    int ret = 0;
-    int ret_val;
-    int reply = 0;
-    int left = 0;
-    char *ptr = NULL;
+	int ret = 0;
+	int ret_val;
+	int reply = 0;
+	int left = 0;
+	char *ptr = NULL;
 
-    ret = recv(fd, (void *)&reply, sizeof(int), 0);
-    if (ret != sizeof(int)) {
-        ALOGE("get reply :%d\n",ret);
-        return 0;
-    }
+	ret = recv(fd, (void *)&reply, sizeof(int), 0);
+	if (ret != sizeof(int)) {
+		ALOGE("get reply :%d\n",ret);
+		return 0;
+	}
 
 	*len = reply;
 
@@ -330,15 +330,15 @@ static int recv_reply(int fd, size_t *len, char *msg)
 	}
 	ALOGI("get reply msg %s, retval %d\n", msg, reply);
 
-    return ret_val;
+	return ret_val;
 }
 
 int send_msg(int bhost,int send_len, const char *send_msg, size_t *reply_len, char *reply_msg)
 {
-    int fd = 0;
-    int ret = 0;
-    int pkt_len = sizeof(int) + send_len; /* send_len + send_msg */
-    char *pbuf = NULL;
+	int fd = 0;
+	int ret = 0;
+	int pkt_len = sizeof(int) + send_len; /* send_len + send_msg */
+	char *pbuf = NULL;
 	char socket_path[PATH_MAX]={0};
 
 	if(bhost){
@@ -347,19 +347,19 @@ int send_msg(int bhost,int send_len, const char *send_msg, size_t *reply_len, ch
 		snprintf(socket_path, PATH_MAX, "%s",VM_SOCKET_PATH_C);
 	}
 
-    fd = open_conn(socket_path);
-    if (fd < 0) {
-        ALOGE("open_con fail! socket_path=%s \n",socket_path);
-        return -1;
-    }
+	fd = open_conn(socket_path);
+	if (fd < 0) {
+		ALOGE("open_con fail! socket_path=%s \n",socket_path);
+		return -1;
+	}
 
-    pbuf = (char*)malloc(pkt_len);
-    if (NULL == pbuf) {
-        ALOGE("malloc fail!\n");
+	pbuf = (char*)malloc(pkt_len);
+	if (NULL == pbuf) {
+		ALOGE("malloc fail!\n");
 		ret = -1;
-        goto END;
-    }
-    memset(pbuf, 0, pkt_len);
+		goto END;
+	}
+	memset(pbuf, 0, pkt_len);
 
 	memcpy(pbuf, &send_len, sizeof(int));
 	memcpy(pbuf+sizeof(int), send_msg, send_len);
@@ -367,17 +367,17 @@ int send_msg(int bhost,int send_len, const char *send_msg, size_t *reply_len, ch
 	if (send_buf(fd, (void *)pbuf, pkt_len)) {
 		ALOGE("sending msg num fail!\n");
 		ret = -1;
-        goto END;
+		goto END;
 	}
 
-    recv_reply(fd, reply_len, reply_msg);
+	recv_reply(fd, reply_len, reply_msg);
 
 END:
-    close(fd);
-    if (NULL != pbuf) {
-        free(pbuf);
-        pbuf = NULL;
-    }
+	close(fd);
+	if (NULL != pbuf) {
+		free(pbuf);
+		pbuf = NULL;
+	}
 	return ret;
 }
 

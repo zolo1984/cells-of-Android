@@ -5,7 +5,7 @@
  *
  * Copyright (C) 2010-2013 Columbia University
  * Authors: Christoffer Dall <cdall@cs.columbia.edu>
- *          Jeremy C. Andrus <jeremya@cs.columbia.edu>
+ *		  Jeremy C. Andrus <jeremya@cs.columbia.edu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -48,7 +48,7 @@ struct client_list {
  * sending socket control requests.
  */
 static inline void add_socket_client(struct socket_client *client,
-				     struct client_list *list)
+					 struct client_list *list)
 {
 	pthread_mutex_lock(&list->mutex);
 	client->next = client->prev = NULL;
@@ -67,7 +67,7 @@ static inline void add_socket_client(struct socket_client *client,
  * Return NULL if none is found.
  */
 static inline struct socket_client *find_socket_client(char *root_path,
-						       struct client_list *list)
+							   struct client_list *list)
 {
 	struct socket_client *ptr;
 
@@ -86,7 +86,7 @@ static inline struct socket_client *find_socket_client(char *root_path,
  * Remove the client from the list of registered clients
  */
 static inline void del_socket_client(struct socket_client *client,
-				     struct client_list *list)
+					 struct client_list *list)
 {
 	if (client != NULL) {
 		pthread_mutex_lock(&list->mutex);

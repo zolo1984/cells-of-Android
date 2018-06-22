@@ -5,8 +5,8 @@
  *
  * Copyright (C) 2010-2013 Columbia University
  * Authors: Christoffer Dall <cdall@cs.columbia.edu>
- *          Jeremy C. Andrus <jeremya@cs.columbia.edu>
- *          Alexander Van't Hof <alexvh@cs.columbia.edu>
+ *		  Jeremy C. Andrus <jeremya@cs.columbia.edu>
+ *		  Alexander Van't Hof <alexvh@cs.columbia.edu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -246,7 +246,7 @@ static int do_console(int sd, int rcv_cmd)
 
 	if (!cmd)
 		printf("Console opened. Use Ctrl-D to exit.\n"
-		       "Press enter if you don't see a prompt.\n");
+			   "Press enter if you don't see a prompt.\n");
 	ret = open_cell_console(fd, cmd, args);
 	if (ret < 0)
 		fprintf(stderr, "Failed to open console\n");
@@ -263,28 +263,28 @@ out:
 static void print_usage(const char *name)
 {
 	const char *usage = "\n\
-    -h|--help                     Print this message\n\
-    <command> -h                  Print command specific help\n\
+	-h|--help					 Print this message\n\
+	<command> -h				  Print command specific help\n\
 \n\
-    create <name> [--id=<id>]     Create a new cell (optional telephony id)\n\
-    destroy <name> [name ...]     Completely removes a cell (deletes FS)\n\
-    next/prev                     Select next/prev cell as foreground\n\
-    list [--all|--running|--zombie]\n\
-                                  List cells (default: --all)\n\
+	create <name> [--id=<id>]	 Create a new cell (optional telephony id)\n\
+	destroy <name> [name ...]	 Completely removes a cell (deletes FS)\n\
+	next/prev					 Select next/prev cell as foreground\n\
+	list [--all|--running|--zombie]\n\
+								  List cells (default: --all)\n\
 \n\
-    start <name> [options]        Start a cell (see start -h for options)\n\
-    stop <name>                   Stop a cell\n\
-    switch <name>                 Switch to a cell\n\
-    console <name>                Open a cell's console\n\
+	start <name> [options]		Start a cell (see start -h for options)\n\
+	stop <name>				   Stop a cell\n\
+	switch <name>				 Switch to a cell\n\
+	console <name>				Open a cell's console\n\
 \n\
-    autostart <name> [on|off]     Set/Get a cell's autostart configuration\n\
-    autoswitch <name> [on|off]    Set/Get a cell's autoswitch configuration\n\
-    getid <name>                  Print a cell's telephony ID\n\
-    setid <name> <id>             Set a cell's telephony ID\n\
-    getactive                     Print the name of the active cell\n\
-    mount <name> [--all]          Mount a cell's filesystem\n\
-    unmount <name>                Unmount a cell's filesystem\n\
-    runcmd <name> <cmd> [args...] Run the command <cmd> in cell <name>\n";
+	autostart <name> [on|off]	 Set/Get a cell's autostart configuration\n\
+	autoswitch <name> [on|off]	Set/Get a cell's autoswitch configuration\n\
+	getid <name>				  Print a cell's telephony ID\n\
+	setid <name> <id>			 Set a cell's telephony ID\n\
+	getactive					 Print the name of the active cell\n\
+	mount <name> [--all]		  Mount a cell's filesystem\n\
+	unmount <name>				Unmount a cell's filesystem\n\
+	runcmd <name> <cmd> [args...] Run the command <cmd> in cell <name>\n";
 
 	fprintf(stderr, "Usage: %s [options]\n", name);
 	fprintf(stderr, "%s", usage);
@@ -447,24 +447,24 @@ static void print_start_help(const char *name)
 {
 	const char *usage = "\
    Valid options (default: "DEFL_START_OPTS"):\n\
-    -s|--switch    make the cell active\n\
-    -w|--wait      wait for the cell to start before returning\n\
-    -C             enable cell console\n\
-    -D|--defaults  use default options (shown above)\n\
-    -H             share Dalvik cache between cells\n\
-    -M             mount unionfs (aufs) filesystem\n\
-    -P <pid-file>  file in which to write global pid of init\n\
-    -S             use "DEFL_SDCARD_ROOT"/<name>/sdcard as the cell's SDCARD\n\
-    -U             userid namespace\n\
-    -W             use wifi proxy\n\
-    -d             mount tmpfs on <root>/dev\n\
-    -g             launch in new cgroup\n\
-    -i             ipc namespace\n\
-    -m             mount namespace\n\
-    -n             network namespace\n\
-    -p             pid namespace (implies -m)\n\
-    -t             mount new devpts (implies -m)\n\
-    -u             utsname namespace\n";
+	-s|--switch	make the cell active\n\
+	-w|--wait	  wait for the cell to start before returning\n\
+	-C			 enable cell console\n\
+	-D|--defaults  use default options (shown above)\n\
+	-H			 share Dalvik cache between cells\n\
+	-M			 mount unionfs (aufs) filesystem\n\
+	-P <pid-file>  file in which to write global pid of init\n\
+	-S			 use "DEFL_SDCARD_ROOT"/<name>/sdcard as the cell's SDCARD\n\
+	-U			 userid namespace\n\
+	-W			 use wifi proxy\n\
+	-d			 mount tmpfs on <root>/dev\n\
+	-g			 launch in new cgroup\n\
+	-i			 ipc namespace\n\
+	-m			 mount namespace\n\
+	-n			 network namespace\n\
+	-p			 pid namespace (implies -m)\n\
+	-t			 mount new devpts (implies -m)\n\
+	-u			 utsname namespace\n";
 	fprintf(stderr, "Usage: %s start <name> [options]\n", name);
 	fprintf(stderr, "%s", usage);
 }
@@ -647,7 +647,7 @@ static int parse_runcmd(int argc, char **argv, struct cell_cmd_arg *cmd)
 
 	/*
 	 * Should be at least 4 positional args:
-	 *     executable, runcmd, cellname, command
+	 *	 executable, runcmd, cellname, command
 	 */
 	if (argc < 4)
 		return -1;

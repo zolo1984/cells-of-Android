@@ -34,14 +34,14 @@ extern int __set_errno(int n);
    attributes according to TERMP and WINP and return handles for both
    ends in AMASTER and ASLAVE.  */
 extern int openpty (int *__amaster, int *__aslave, char *__name,
-		    const struct termios *__termp,
-		    const struct winsize *__winp);
+			const struct termios *__termp,
+			const struct winsize *__winp);
 
 /* Create child process and establish the slave pseudo terminal as the
    child's controlling terminal.  */
 extern int forkpty (int *__amaster, char *__name,
-		    const struct termios *__termp,
-		    const struct winsize *__winp);
+			const struct termios *__termp,
+			const struct winsize *__winp);
 
 __END_DECLS
 
