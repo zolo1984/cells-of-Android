@@ -279,6 +279,25 @@ static void init_ok()
 	send_msg(0,sizeof(int),(const char *)&_e,NULL,NULL); //SYSTEM_VM_INIT_OK
 }
 
+static void init_vm_property_value()
+{
+	char buf[10];
+	int len = 0;
+	int vmfd = open("/.cell",O_RDONLY);
+	if(vmfd>=0){
+		len = read(vmfd, buf, 10);
+		if(len > 0){
+			if(strcmp(buf,"0") == 0){
+				property_set("persist.sys.exit", "0");
+				return ;
+			}
+		}
+		close(vmfd);
+	}
+
+	property_set("persist.sys.exit", "1");
+}
+
 int main()
 {
 	signal(SIGPIPE, SIG_IGN);
@@ -293,7 +312,9 @@ int main()
 	}
 
 	pthread_mutex_init(&_switch_mutex_t,NULL);
-	
+
+	init_vm_property_value();
+
 	config_vm_net_work();
 
 	register_cmd_handle(&vm_handle_message,VM_BASE_CMD);
