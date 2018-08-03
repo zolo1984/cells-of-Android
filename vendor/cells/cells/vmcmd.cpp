@@ -289,6 +289,7 @@ static void init_vm_property_value()
 		if(len > 0){
 			if(strcmp(buf,"0") == 0){
 				property_set("persist.sys.exit", "0");
+				close(vmfd);
 				return ;
 			}
 		}
