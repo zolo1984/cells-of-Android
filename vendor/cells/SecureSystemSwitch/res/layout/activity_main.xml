@@ -11,7 +11,6 @@
         android:layout_height="394dp"
         android:layout_marginTop="53dp"
         android:scaleType="fitXY"
-        android:src="@drawable/cells_splash_secure_exit"
         android:visibility="visible" />
 
 </LinearLayout>

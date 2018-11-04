@@ -23,7 +23,7 @@ LOCAL_SRC_FILES := \
 	IFingerprintDaemon.cpp \
 	IFingerprintDaemonCallback.cpp \
 	fingerprintd.cpp
-LOCAL_MODULE_OWNER := cells
+LOCAL_MODULE_OWNER := huawei
 LOCAL_MODULE := fingerprintd
 LOCAL_SHARED_LIBRARIES := \
 	libbinder \

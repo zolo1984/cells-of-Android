@@ -560,7 +560,7 @@ static int mount_vendorfs(const char *root_path, const char *rw_path)
 		return -1;
 	}
 	//sprintf(system_src, "%s/system", rw_path);
-		//sprintf(system_src, "/data/system_bak");
+	//sprintf(system_src, "/data/system_bak");
 	sprintf(system_src, "/vendor");
 
 	ret = 0;
@@ -584,7 +584,7 @@ static int mount_sdcard(const char *name, const char *root_path,
 {
 	int ret, s_errno;
 	char *src, *dst;
-		char path1[PATH_MAX], path2[PATH_MAX];
+	char path1[PATH_MAX], path2[PATH_MAX];
 
 	/* +10: '//sdcard0\0' */
 	src = malloc(strlen(g_sdcard_root) + strlen(name) + 10);
@@ -1050,7 +1050,7 @@ static void list_cells(int fd, int mask)
 
 	name_list = get_cell_names();
 	if (name_list == NULL) {
-		send_msg(fd, "1 Failed to get name list");
+		send_msg(fd, "Failed to get name list");
 		return;
 	}
 
@@ -1085,7 +1085,7 @@ static void list_cells(int fd, int mask)
 			break;
 	}
 	free_cell_names(name_list);
-	send_msg(fd, "0 %s", msg);
+	send_msg(fd, "%s", msg);
 }
 
 /* Sends back a msg with info for each cell separated by the record separator
@@ -1244,18 +1244,18 @@ static void switch_response(int fd, int ret, char *name)
 {
 	switch (ret) {
 	case -1:
-		send_msg(fd, "1 Switch failed. Couldn't open proc file");
+		send_msg(fd, "Switch failed. Couldn't open proc file");
 		break;
 	case -2:
-		send_msg(fd, "1 Cell is already active");
+		send_msg(fd, "Cell is already active");
 		break;
 	case -3:
-		send_msg(fd, "1 Switch failed. Couldn't write to proc file");
+		send_msg(fd, "Switch failed. Couldn't write to proc file");
 		break;
 	}
 
 	/* Send success response */
-	send_msg(fd, "0 Switched to %s", name);
+	send_msg(fd, "Switched to %s", name);
 }
 
 /* Perform the next and prev commands. Set next to true if performing next. */
@@ -1278,13 +1278,13 @@ static void __do_next_or_prev(int fd, int next)
 
 	if (cell == NULL) {
 		unlock_send_msg(&g_cell_list.mutex, fd,
-				"1 There are no running cells");
+				"There are no running cells");
 		return;
 	}
 
 	if (cell == orig) {
 		unlock_send_msg(&g_cell_list.mutex, fd,
-				"1 Only one cell running");
+				"Only one cell running");
 		return;
 	}
 
@@ -1314,7 +1314,7 @@ static void do_switch(int fd, struct cell_cmd_arg *args)
 	/*struct cell_node *cell = search_cells(name);
 	if (cell == NULL) {
 		unlock_send_msg(&g_cell_list.mutex, fd,
-				"1 Switch failed. Given cell not running");
+				"Switch failed. Given cell not running");
 		return;
 	}
 	ALOGI("(switch) Switching to '%s'", name);
@@ -1340,9 +1340,9 @@ static void do_getactive(int fd, struct cell_cmd_arg *cmd_args)
 	pthread_mutex_unlock(&active_cell_lock);
 
 	if (cell != NULL)
-		send_msg(fd, "0 %s", name);
+		send_msg(fd, "%s", name);
 	else
-		send_msg(fd, "1 No cell is active");
+		send_msg(fd, "No cell is active");
 }
 
 /* Creates a new cell. "Creation" consists only of making 2 directories.
@@ -1355,7 +1355,7 @@ static int __do_create(int fd, struct cell_cmd_arg *cmd_args)
 	struct config_info config;
 
 	if (strcmp(cmd_args->cellname, "") == 0) {
-		send_msg(fd, "1 You must specify a cell");
+		send_msg(fd, "You must specify a cell");
 		return -1;
 	}
 
@@ -1363,13 +1363,13 @@ static int __do_create(int fd, struct cell_cmd_arg *cmd_args)
 
 	if (cell_exists(name)) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Create failed. Given name already exists.");
+				"Create failed. Given name already exists.");
 		return -1;
 	}
 
 	if (args->id > -1 && id_exists(args->id)) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Create failed. ID already exists.");
+				"Create failed. ID already exists.");
 		return -1;
 	}
 
@@ -1378,13 +1378,13 @@ static int __do_create(int fd, struct cell_cmd_arg *cmd_args)
 		config.id = args->id;
 	if (write_config(cmd_args->cellname, &config) == -1) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Create failed. Couldn't create config file.");
+				"Create failed. Couldn't create config file.");
 		return -1;
 	}
 
 	if (create_cell_dirs(cmd_args->cellname, 0) == -1) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Create failed. Couldn't create directories");
+				"Create failed. Couldn't create directories");
 		remove_config(cmd_args->cellname);
 		return -1;
 	}
@@ -1397,7 +1397,7 @@ static void do_create(int fd, struct cell_cmd_arg *cmd_args)
 {
 	int ret = __do_create(fd, cmd_args);
 	if (ret == 0)
-		send_msg(fd, "0 Created %s", cmd_args->cellname);
+		send_msg(fd, "Created %s", cmd_args->cellname);
 }
 
 /* Returns the newly created cell_node on success. NULL on failure */
@@ -1414,7 +1414,7 @@ static struct cell_node *__do_start(int fd, char *name,
 	memcpy(&cell_args.start_args, args, sizeof(cell_args.start_args));
 
 	if (get_cell_args(name, &cell_args) == -1) {
-		send_msg(fd, "1 Start failed. Error parsing start options");
+		send_msg(fd, "Start failed. Error parsing start options");
 		return NULL;
 	}
 
@@ -1424,7 +1424,7 @@ static struct cell_node *__do_start(int fd, char *name,
 	cell_args.argv = malloc(sizeof(char *)*2);
 	if (!cell_args.argv) {
 		ALOGE("No memory for cell argv");
-		send_msg(fd, "1 Start failed. No memory for cell argv");
+		send_msg(fd, "Start failed. No memory for cell argv");
 		return NULL;
 	}
 	cell_args.argv[0] = "/init";
@@ -1462,7 +1462,7 @@ static struct cell_node *__do_start(int fd, char *name,
 		 */
 		kill(pid, SIGKILL); /* cell's parent will handle rest */
 		tear_down_cell(&cell_args, &console_pty);
-		send_msg(fd, "1 Start failed. Couldn't create cell node (this is really bad)");
+		send_msg(fd, "Start failed. Couldn't create cell node (this is really bad)");
 		return NULL;
 	}
 	new->start_time = cell_args.start_time;
@@ -1502,7 +1502,7 @@ static void do_start(int fd, struct cell_cmd_arg *cmd_args)
 
 	ALOGI("start: Start %s\n", name);
 	if (strcmp(name, "") == 0) {
-		send_msg(fd, "1 You must specify a cell");
+		send_msg(fd, "You must specify a cell");
 		return;
 	}
 
@@ -1510,20 +1510,20 @@ static void do_start(int fd, struct cell_cmd_arg *cmd_args)
 	pthread_mutex_lock(&config_lock);
 	if (!cell_exists(name)) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Start failed. Cell does not exist.");
+				"Start failed. Cell does not exist.");
 		return;
 	}
 	/* Make sure cell is not already running */
 	if (search_cells(name) != NULL) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Start failed. Cell is already running.");
+				"Start failed. Cell is already running.");
 		return;
 	}
 
 	/* Make sure the cell's directories exist */
 	if (create_cell_dirs(name, 1) == -1) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Start failed. Could not create cell dirs.");
+				"Start failed. Could not create cell dirs.");
 		return;
 	}
 
@@ -1548,7 +1548,7 @@ static void do_start(int fd, struct cell_cmd_arg *cmd_args)
 			sleep(1);
 	}
 
-	send_msg(fd, "0 Started %s", name);
+	send_msg(fd, "Started %s", name);
 }
 
 static void do_stop(int fd, struct cell_cmd_arg *cmd_args)
@@ -1556,7 +1556,7 @@ static void do_stop(int fd, struct cell_cmd_arg *cmd_args)
 	char *name = cmd_args->cellname;
 	ALOGI("stop: Stop %s", name);
 	if (strcmp(name, "") == 0) {
-		send_msg(fd, "1 You must specify a cell");
+		send_msg(fd, "You must specify a cell");
 		return;
 	}
 
@@ -1564,14 +1564,14 @@ static void do_stop(int fd, struct cell_cmd_arg *cmd_args)
 	struct cell_node *cell = search_cells(name);
 	if (cell == NULL) {
 		unlock_send_msg(&g_cell_list.mutex, fd,
-				"1 Cell, %s, is not running", name);
+				"Cell, %s, is not running", name);
 		return;
 	}
 
 	char *root_path = get_root_path(name);
 	if (root_path == NULL) {
 		unlock_send_msg(&g_cell_list.mutex, fd,
-				"1 Stop failed. Could not get root path.");
+				"Stop failed. Could not get root path.");
 		return;
 	}
 
@@ -1597,7 +1597,7 @@ static void do_stop(int fd, struct cell_cmd_arg *cmd_args)
 
 	free(root_path);
 
-	send_msg(fd, "0 Stopped %s", name);
+	send_msg(fd, "Stopped %s", name);
 }
 
 static void do_destroy(int fd, struct cell_cmd_arg *cmd_args)
@@ -1606,7 +1606,7 @@ static void do_destroy(int fd, struct cell_cmd_arg *cmd_args)
 
 	ALOGI("stop: Destroy %s", name);
 	if (strcmp(name, "") == 0) {
-		send_msg(fd, "1 You must specify a cell");
+		send_msg(fd, "You must specify a cell");
 		return;
 	}
 
@@ -1615,14 +1615,14 @@ static void do_destroy(int fd, struct cell_cmd_arg *cmd_args)
 	/* Make sure cell exists */
 	if (!cell_exists(name)) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Destroy failed. Cell does not exist.");
+				"Destroy failed. Cell does not exist.");
 		return;
 	}
 
 	/* Make sure cell is not currently running */
 	if (search_cells(name) != NULL) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Destroy failed. Cell is currently running.");
+				"Destroy failed. Cell is currently running.");
 		return;
 	}
 
@@ -1630,13 +1630,13 @@ static void do_destroy(int fd, struct cell_cmd_arg *cmd_args)
 	char *root_path = get_root_path(name);
 	if (root_path == NULL) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Destroy failed. Could not get root path.");
+				"Destroy failed. Could not get root path.");
 		return;
 	}
 	char *rw_path = get_rw_path(name);
 	if (rw_path == NULL) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Destroy failed. Could not get rw path.");
+				"Destroy failed. Could not get rw path.");
 		goto err_free_rootpath;
 	}
 
@@ -1644,14 +1644,14 @@ static void do_destroy(int fd, struct cell_cmd_arg *cmd_args)
 	if (dir_exists(rw_path)) {
 		if (rmtree(rw_path) == -1) {
 			unlock_send_msg(&config_lock, fd,
-					"1 Could not remove rw path.");
+					"Could not remove rw path.");
 			goto err_free_path;
 		}
 	}
 	if (dir_exists(root_path)) {
 		if (rmtree(root_path) == -1) {
 			unlock_send_msg(&config_lock, fd,
-					"1 Could not remove root path.");
+					"Could not remove root path.");
 			/*
 			 * we've already removed the rw_path, so we'll
 			 * error out, but first let's at least make it
@@ -1666,11 +1666,11 @@ static void do_destroy(int fd, struct cell_cmd_arg *cmd_args)
 	if (remove_config(name) == -1) {
 		create_cell_dirs(name, 0);
 		unlock_send_msg(&config_lock, fd,
-				"1 Could not remove config file.");
+				"Could not remove config file.");
 		goto err_free_path;
 	}
 
-	unlock_send_msg(&config_lock, fd, "0 Destroyed %s", name);
+	unlock_send_msg(&config_lock, fd, "Destroyed %s", name);
 
 err_free_path:
 	free(rw_path);
@@ -1685,7 +1685,7 @@ static void do_console(int fd, struct cell_cmd_arg *args)
 	char *name = args->cellname;
 	char *msg;
 	if (strcmp(name, "") == 0) {
-		send_msg(fd,"1 Failed to get console. You must specify a cell");
+		send_msg(fd,"Failed to get console. You must specify a cell");
 		return;
 	}
 
@@ -1694,15 +1694,15 @@ static void do_console(int fd, struct cell_cmd_arg *args)
 	pthread_mutex_lock(&g_cell_list.mutex);
 	struct cell_node *cell = search_cells(name);
 	if (cell == NULL) {
-		send_msg(fd, "1 Cell is not running");
+		send_msg(fd, "Cell is not running");
 		goto err_do_console;
 	} else if (cell->console_pty.ptm == -1) {
-		send_msg(fd, "1 Console unavailable for given cell");
+		send_msg(fd, "Console unavailable for given cell");
 		goto err_do_console;
 	}
 
 	/* Console avaiable. Send success msg followed by fd */
-	if (send_msg(fd, "0 %s", CONSOLE_READY_MSG) == -1) {
+	if (send_msg(fd, "%s", CONSOLE_READY_MSG) == -1) {
 		ALOGE("Error sending console message");
 		goto err_do_console;
 	}
@@ -1732,16 +1732,16 @@ static void do_mount(int fd, struct cell_cmd_arg *cmd_args)
 
 	ALOGI("mount: Mount request for \"%s\"", name);
 	if (strcmp(name, "") == 0) {
-		send_msg(fd, "1 Failed to mount. You must specify a cell");
+		send_msg(fd, "Failed to mount. You must specify a cell");
 		return;
 	}
 
 	/* Mount the filesystem */
 	if (mount_cell(name, args->all) == -1) {
-		send_msg(fd, "1 Failed to mount filesystem for cell");
+		send_msg(fd, "Failed to mount filesystem for cell");
 		return;
 	}
-	send_msg(fd, "0 Mounted filesystem at %s/%s", g_cell_dir, name);
+	send_msg(fd, "Mounted filesystem at %s/%s", g_cell_dir, name);
 }
 
 int unmount_all(const char *root_path, int free_root)
@@ -1787,7 +1787,7 @@ static void do_unmount(int fd, struct cell_cmd_arg *cmd_args)
 
 	ALOGI("unmount: Unmounting request for \"%s\"", name);
 	if (strcmp(name, "") == 0) {
-		send_msg(fd, "1 Unmount failed. You must specify a cell");
+		send_msg(fd, "Unmount failed. You must specify a cell");
 		return;
 	}
 
@@ -1795,14 +1795,14 @@ static void do_unmount(int fd, struct cell_cmd_arg *cmd_args)
 	pthread_mutex_lock(&config_lock);
 	if (search_cells(name) != NULL) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Unmount failed. Cell is currently running.");
+				"Unmount failed. Cell is currently running.");
 		return;
 	}
 
 	char *root_path = get_root_path(name);
 	if (root_path == NULL) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Failed to find rootfs for %s", name);
+				"Failed to find rootfs for %s", name);
 		return;
 	}
 
@@ -1810,11 +1810,11 @@ static void do_unmount(int fd, struct cell_cmd_arg *cmd_args)
 
 	if (ret != 0)
 		unlock_send_msg(&config_lock, fd,
-				"1 Failed to unmount rootfs %s (ret=%d)",
+				"Failed to unmount rootfs %s (ret=%d)",
 				root_path, ret);
 	else
 		unlock_send_msg(&config_lock, fd,
-				"0 Unmounted filesystem at %s", root_path);
+				"Unmounted filesystem at %s", root_path);
 
 	free(root_path);
 }
@@ -1829,26 +1829,26 @@ static void do_runcmd(int fd, struct cell_cmd_arg *cmd_args)
 
 	ALOGI("Running command \"%s\" in \"%s\"", args->cmd, name);
 	if (strcmp(name, "") == 0) {
-		send_msg(fd, "1 logcat failed. You must specify a cell");
+		send_msg(fd, "logcat failed. You must specify a cell");
 		return;
 	}
 	cmdlen = strnlen(args->cmd, sizeof(args->cmd));
 	if (cmdlen == 0 || args->cmd[0] == 0) {
-		send_msg(fd, "1 invalid command.");
+		send_msg(fd, "invalid command.");
 		return;
 	}
 
 	pthread_mutex_lock(&g_cell_list.mutex);
 	cell = search_cells(name);
 	if (cell == NULL) {
-		send_msg(fd, "1 Cell is not running");
+		send_msg(fd, "Cell is not running");
 		goto err;
 	} else if (cell->console_pty.ptm == -1) {
-		send_msg(fd, "1 Console unavailable for given cell");
+		send_msg(fd, "Console unavailable for given cell");
 		goto err;
 	}
 
-	if (send_msg(fd, "0 %s L %4d%s",
+	if (send_msg(fd, "%s L %4d%s",
 			 CONSOLE_READY_MSG, cmdlen+1, args->cmd) == -1) {
 		ALOGE("Error sending command");
 		goto err;
@@ -1878,20 +1878,20 @@ static void do_autostart(int fd, struct cell_cmd_arg *cmd_args)
 	struct config_info config;
 
 	if (strcmp(name, "") == 0) {
-		send_msg(fd, "1 You must specify a cell");
+		send_msg(fd, "You must specify a cell");
 		return;
 	}
 	/* Make sure cell exists */
 	pthread_mutex_lock(&config_lock);
 	if (!cell_exists(name)) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Cell, %s, does not exist", name);
+				"Cell, %s, does not exist", name);
 		return;
 	}
 
 	if (read_config(name, &config) == -1) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Could not read configuration file");
+				"Could not read configuration file");
 		return;
 	}
 
@@ -1900,7 +1900,7 @@ static void do_autostart(int fd, struct cell_cmd_arg *cmd_args)
 	else if (args->off) /* off */
 		config.autostart = 0;
 	else {
-		unlock_send_msg(&config_lock, fd, "0 Cell autostart is %s",
+		unlock_send_msg(&config_lock, fd, "Cell autostart is %s",
 				config.autostart ? "on" : "off");
 		return;
 	}
@@ -1909,10 +1909,10 @@ static void do_autostart(int fd, struct cell_cmd_arg *cmd_args)
 
 	if (write_config(name, &config) == -1) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Could not write configuration file");
+				"Could not write configuration file");
 		return;
 	}
-	unlock_send_msg(&config_lock, fd, "0 Cell autostart %s",
+	unlock_send_msg(&config_lock, fd, "Cell autostart %s",
 			config.autostart ? "enabled" : "disabled");
 }
 
@@ -1923,20 +1923,20 @@ static void do_autoswitch(int fd, struct cell_cmd_arg *cmd_args)
 	struct config_info config;
 
 	if (strcmp(name, "") == 0) {
-		send_msg(fd, "1 You must specify a cell");
+		send_msg(fd, "You must specify a cell");
 		return;
 	}
 	/* Make sure cell exists */
 	pthread_mutex_lock(&config_lock);
 	if (!cell_exists(name)) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Cell '%s' does not exist", name);
+				"Cell '%s' does not exist", name);
 		return;
 	}
 
 	if (read_config(name, &config) == -1) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Could not read configuration file");
+				"Could not read configuration file");
 		return;
 	}
 
@@ -1945,7 +1945,7 @@ static void do_autoswitch(int fd, struct cell_cmd_arg *cmd_args)
 	else if (args->off) /* off */
 		config.autoswitch = 0;
 	else {
-		unlock_send_msg(&config_lock, fd, "0 Cell autoswitch is %s",
+		unlock_send_msg(&config_lock, fd, "Cell autoswitch is %s",
 				config.autoswitch ? "on" : "off");
 		return;
 	}
@@ -1954,10 +1954,10 @@ static void do_autoswitch(int fd, struct cell_cmd_arg *cmd_args)
 
 	if (write_config(name, &config) == -1) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Could not write configuration file");
+				"Could not write configuration file");
 		return;
 	}
-	unlock_send_msg(&config_lock, fd, "0 Cell autoswitch %s",
+	unlock_send_msg(&config_lock, fd, "Cell autoswitch %s",
 			config.autoswitch ? "enabled" : "disabled");
 }
 
@@ -1970,7 +1970,7 @@ static void do_setid(int fd, struct cell_cmd_arg *cmd_args)
 
 	ALOGI("setid: Set ID of %s", name);
 	if (strcmp(name, "") == 0) {
-		send_msg(fd, "1 You must specify a cell");
+		send_msg(fd, "You must specify a cell");
 		return;
 	}
 
@@ -1978,29 +1978,29 @@ static void do_setid(int fd, struct cell_cmd_arg *cmd_args)
 	pthread_mutex_lock(&config_lock);
 	if (!cell_exists(name)) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Setting ID failed. Cell does not exist.");
+				"Setting ID failed. Cell does not exist.");
 		return;
 	}
 
 	if (id < 0 || id > 9) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Invalid ID given. Expecting 0-9.");
+				"Invalid ID given. Expecting 0-9.");
 		return;
 	}
 	if (id_exists(id)) {
 		unlock_send_msg(&config_lock, fd,
-				"1 ID is already in use.");
+				"ID is already in use.");
 		return;
 	}
 	if (read_config(name, &config) == -1) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Failed to read configuration file.");
+				"Failed to read configuration file.");
 		return;
 	}
 	config.id = id;
 	if (write_config(name, &config) == -1) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Failed to write configuration file.");
+				"Failed to write configuration file.");
 		return;
 	}
 
@@ -2011,7 +2011,7 @@ static void do_setid(int fd, struct cell_cmd_arg *cmd_args)
 		cell->id = id;
 	pthread_mutex_unlock(&g_cell_list.mutex);
 
-	unlock_send_msg(&config_lock, fd, "0 Changed %s's ID to %d", name, id);
+	unlock_send_msg(&config_lock, fd, "Changed %s's ID to %d", name, id);
 }
 
 static void do_getid(int fd, struct cell_cmd_arg *cmd_args)
@@ -2020,22 +2020,22 @@ static void do_getid(int fd, struct cell_cmd_arg *cmd_args)
 	struct config_info config;
 	ALOGI("getid: Get ID of %s", name);
 	if (strcmp(name, "") == 0) {
-		send_msg(fd, "1 You must specify a cell");
+		send_msg(fd, "You must specify a cell");
 		return;
 	}
 	/* Make sure cell exists */
 	pthread_mutex_unlock(&config_lock);
 	if (!cell_exists(name)) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Getting ID failed. Cell does not exist.");
+				"Getting ID failed. Cell does not exist.");
 		return;
 	}
 	if (read_config(name, &config) == -1) {
 		unlock_send_msg(&config_lock, fd,
-				"1 Failed to read configuration file.");
+				"Failed to read configuration file.");
 		return;
 	}
-	unlock_send_msg(&config_lock, fd, "0 %d", config.id);
+	unlock_send_msg(&config_lock, fd, "%d", config.id);
 }
 
 static void dispatch_cell_cmd(int fd, struct cell_cmd_arg *arg)

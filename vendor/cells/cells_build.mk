@@ -10,4 +10,4 @@ endif
 # Library for ART-specific functions
 ##########################################################
 
-PRODUCT_PACKAGES += celld cellc vmcmd hostcmd kernel_kmsg_cells logcat_cells libbridge brctl rilproxyd fingerprintd qmuxproxyd switchsystem stopsystem
+PRODUCT_PACKAGES += celld cellc vmcmd hostcmd kernel_kmsg_cells logcat_cells switchsystem

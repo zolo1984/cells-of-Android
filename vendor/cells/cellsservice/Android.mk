@@ -15,7 +15,7 @@ LOCAL_SRC_FILES:= \
 
 LOCAL_MODULE := cellsservice
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_OWNER := cells
+LOCAL_MODULE_OWNER := huawei
 LOCAL_SHARED_LIBRARIES := libm libcutils libc libgui libbinder libutils
 #LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
 include $(BUILD_EXECUTABLE)
@@ -30,7 +30,7 @@ LOCAL_SRC_FILES := \
 
 LOCAL_MODULE:= cellssync
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_OWNER := cells
+LOCAL_MODULE_OWNER := huawei
 #LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
 LOCAL_SHARED_LIBRARIES := libm libcutils libc libgui libbinder libutils
 include $(BUILD_EXECUTABLE)

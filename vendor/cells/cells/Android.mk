@@ -43,7 +43,7 @@ LOCAL_SRC_FILES:= \
 
 LOCAL_MODULE := celld
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_OWNER := cells
+LOCAL_MODULE_OWNER := huawei
 LOCAL_C_INCLUDES := \
 	$(call include-path-for, libhardware_legacy)/hardware_legacy
 LOCAL_SHARED_LIBRARIES := libm libcutils libc libhardware_legacy libselinux
@@ -65,7 +65,7 @@ LOCAL_SRC_FILES := \
 
 LOCAL_MODULE:= cellc
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_OWNER := cells
+LOCAL_MODULE_OWNER := huawei
 LOCAL_SHARED_LIBRARIES := libm libcutils libc
 include $(BUILD_EXECUTABLE)
 
@@ -80,7 +80,7 @@ LOCAL_SRC_FILES := \
 
 LOCAL_MODULE:= vmcmd
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_OWNER := cells
+LOCAL_MODULE_OWNER := huawei
 #LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
 LOCAL_SHARED_LIBRARIES := libm libcutils libc libgui libbinder libutils libpowermanager
 include $(BUILD_EXECUTABLE)
@@ -96,7 +96,7 @@ LOCAL_SRC_FILES := \
 
 LOCAL_MODULE:= hostcmd
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_OWNER := cells
+LOCAL_MODULE_OWNER := huawei
 #LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT_SBIN)
 LOCAL_SHARED_LIBRARIES := libm libcutils libc libgui libbinder libutils libpowermanager
 include $(BUILD_EXECUTABLE)

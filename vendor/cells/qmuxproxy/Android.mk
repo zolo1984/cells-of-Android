@@ -23,7 +23,7 @@ ifeq ($(SIM_COUNT), 2)
     LOCAL_CFLAGS += -DANDROID_SIM_COUNT_2
 endif
 
-LOCAL_MODULE_OWNER := cells
+LOCAL_MODULE_OWNER := huawei
 LOCAL_MODULE:= qmuxproxyd
 LOCAL_MODULE_TAGS := optional
 

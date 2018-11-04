@@ -59,6 +59,16 @@ static void  exit_self(bool bstart)
 		property_set("ctl.stop", "adbd");
 	}
 
+	{
+		system("ndc interface setcfg vm_wlan 172.17.3.2 16 up multicast broadcast");
+		system("ndc tether interface add vm_wlan");
+		system("ndc network interface add local vm_wlan");
+		system("ndc network route add local vm_wlan 172.17.0.0/16");
+		system("ndc ipfwd enable tethering");
+		system("ndc nat enable vm_wlan wlan0 1 172.17.0.0/16");
+		system("ndc ipfwd add vm_wlan wlan0");
+	}
+
 	system("cellc switch cell1");
 
 	if(!bstart){

@@ -284,12 +284,7 @@ out:
 void close_fds(void)
 {
 	/* Close all file descriptors */
-	int i;
-
-	/* gwb: the getdtablesize functions has been deprecated by Posix and 
-				   has been removed from Android's LB64 ABI
-				   Replace calls to it with the modern equivalent sysconf(_SC_OPEN_MAX) */
-	//for (i = getdtablesize(); i >= 0; --i)   
+	int i; 
 	for (i = sysconf(_SC_OPEN_MAX); i >= 0; --i)
 		close(i);
 }

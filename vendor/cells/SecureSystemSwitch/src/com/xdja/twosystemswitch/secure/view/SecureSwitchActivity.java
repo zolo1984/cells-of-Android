@@ -17,10 +17,11 @@ public class SecureSwitchActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.activity_main);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+		//getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 		String v = SystemProperties.get("persist.sys.exit","0");
 		if(!v.equals("1"))
 			SystemProperties.set("persist.sys.exit","1");
 		finish();
 	}
 }
+
