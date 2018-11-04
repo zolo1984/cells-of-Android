@@ -27,7 +27,7 @@
 3、位于kernel目录下的drivers目录
     1)、core.c --- 系统隔离初始化 drv_namespace
 
-    2)、evdev.c mousedev.c --- input 事件互斥上报
+    2)、evdev.c mousedev.c --- input 事件互斥上报 (需增加input兼容模式)
 
     3)、veth.c --- wlan、rmnt_data 网络虚拟化必备“网线”， 请根据最新版本内核更新一下此设备，网络虚拟化借鉴了“usb共享网络”的原理
 
