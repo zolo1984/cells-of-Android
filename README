@@ -89,25 +89,29 @@
     
     5、给辅助系统增加*.rc文件，统一命名为*.cell.rc，其中init.cell.rc要做如下几件事：
        1）on boot 节点 增加 write /dev/celld.startpipe cell
-       2）增加日志服务和vmcmd服务，还有fstab.* 文件系统
+       2）增加日志服务和vmcmd服务
        3）屏蔽不需要的系统服务例如ril-deamon
        4）修改vendor/cells/cells/celld.c rename_cells_file 函数
        
-    6、给主系统修改init.rc文件，要做如下几件事：
+    6、给辅助系统增加文件系统配置文件fstab.* ，其中有如下几件事要做：
+       1）屏蔽/system / /data /sdcard /zram 分区的配置项
+       2）如果有selinux属性，需要去掉
+       
+    7、给主系统修改init.rc文件，要做如下几件事：
        1）增加日志服务，celld服务和hostcmd服务
        2）注意可先将celld设为disable属性，系统整体修改完以后可使用setprop ctl.start celld 命令 启动辅助系统
        
-    7、将vendor/cells 中的 cells SecureSystemSwitch logcat Kernel_Kmsg 移植进自己的工程中，将编译链设置好
+    8、将vendor/cells 中的 cells SecureSystemSwitch logcat Kernel_Kmsg 移植进自己的工程中，将编译链设置好
     
-    8、按照github源码对比合入frameworks/native 源码
+    9、按照github源码对比合入frameworks/native 源码
     
-    9、按照github源码对比合入frameworks/av 源码
+    10、按照github源码对比合入frameworks/av 源码
     
-    10、按照github源码对比合入frameworks/base 源码
+    11、按照github源码对比合入frameworks/base 源码
     
-    11、按照github源码对比合入adb 源码
+    12、按照github源码对比合入adb 源码
 
-    12、按照github源码对比合入hardware/power 源码
+    13、按照github源码对比合入hardware/power 源码
     
     注意事项：
     1、按这个步骤1个1个的合入，编译，刷机，验证，务必保证日志系统、主系统和原生系统是一致的
