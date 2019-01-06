@@ -312,9 +312,9 @@ int main()
 		ALOGE("sigaction error: %s",strerror(errno));
 	}
 
-	pthread_mutex_init(&_switch_mutex_t,NULL);
-
 	init_vm_property_value();
+
+	pthread_mutex_init(&_switch_mutex_t,NULL);
 
 	config_vm_net_work();
 

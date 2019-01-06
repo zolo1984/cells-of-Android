@@ -857,9 +857,9 @@ static void *__monitor_start_state(void *arg)
 	close(fd);
 	unlink(pipe_name);
 
-	property_set("ctl.start", "hostcmd");
-	property_set("ctl.start", "qmuxproxyd");
-	property_set("ctl.start", "rilproxyd");
+	//property_set("ctl.start", "hostcmd");
+	//property_set("ctl.start", "qmuxproxyd");
+	//property_set("ctl.start", "rilproxyd");
 
 	ALOGI("Cell '%s' started!", cms->name);
 

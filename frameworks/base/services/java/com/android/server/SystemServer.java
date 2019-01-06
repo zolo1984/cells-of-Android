@@ -269,7 +269,7 @@ public final class SystemServer {
             startCoreServices();
             startOtherServices();
 
-            startcellsSwitchServices();
+            //startcellsSwitchServices();
         } catch (Throwable ex) {
             Slog.e("System", "******************************************");
             Slog.e("System", "************ Failure starting system services", ex);

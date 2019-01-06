@@ -45,7 +45,6 @@
 #include <cutils/log.h>
 #include <cutils/memory.h>
 #include <cutils/misc.h>
-#include <cutils/container.h>
 #include <selinux/selinux.h>
 #include "cutils/properties.h"
 

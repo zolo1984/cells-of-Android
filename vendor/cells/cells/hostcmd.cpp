@@ -284,6 +284,20 @@ static void thread_exit_handler(int sig)
 	pthread_exit(0);
 }
 
+static void wait_for_vm(){
+	property_set("persist.sys.vm.init", "0");
+	while(true){
+		sleep(1);
+
+		if(access("/data/cells/cell1/dev", F_OK) != 0){
+			continue;
+		}
+
+		break;
+	}
+	property_set("persist.sys.vm.init", "1");
+}
+
 int main()
 {
 	signal(SIGPIPE, SIG_IGN);
@@ -297,9 +311,11 @@ int main()
 		ALOGE("sigaction error: %s",strerror(errno));
 	}
 
+	property_set("persist.sys.exit", "0");
+
 	pthread_mutex_init(&_switch_mutex_t,NULL);
 
-	register_cmd_handle(&host_handle_message,HOST_BASE_CMD);
+	wait_for_vm();
 
 	char value[PROPERTY_VALUE_MAX];
 	property_get("persist.sys.exit", value, "1");
@@ -308,6 +324,8 @@ int main()
 	}else{
 		exit_self(true);
 	}
+
+	register_cmd_handle(&host_handle_message,HOST_BASE_CMD);
 
 	create_server_daemon(1);
 	return 0;
