@@ -65,3 +65,59 @@
     kernel ---> init(主系统) ---> init.rc ---> celld(容器生成器) ---> init(辅助系统)
 
 
+2019-01-06
+    各位朋友，如果有什么问题可以留言的，2018年协助一些朋友将此方案移植到他们的机型上，特更新下移植过程，供参考：
+    1、修改config
+    CONFIG_UTS_NS=y
+    CONFIG_IPC_NS=y
+    CONFIG_USER_NS=y
+    CONFIG_PID_NS=y
+    CONFIG_NET_NS=y
+    CONFIG_DRV_NS=y
+    CONFIG_VETH=y
+    android 6.0 以后的将此开启
+    CONFIG_SYSVIPC=y
+    
+    2、驱动层，依次移植core.c drv_namespace.c nsproxy.c binder.c evdev.c mousedev.c alarm-dev.c logger.c
+    
+    3、关闭selinux（disabled），这样会省掉很多事；
+       如果关不掉，则将selinux置为兼容模式，注意selinux是兼容模式时：
+       1）*.rc 中增加的service需要增加标签属性。
+       2）修改init进程，利用ro.boot.vm=1（辅助系统）属性将所有selinux控制功能辅助系统单方面屏蔽。
+       
+    4、修改init进程，利用ro.boot.vm=1（辅助系统）属性，辅助系统单方面禁止导入firmware（内核固件）
+    
+    5、给辅助系统增加*.rc文件，统一命名为*.cell.rc，其中init.cell.rc要做如下几件事：
+       1）on boot 节点 增加 write /dev/celld.startpipe cell
+       2）增加日志服务和vmcmd服务，还有fstab.* 文件系统
+       3）屏蔽不需要的系统服务例如ril-deamon
+       4）修改vendor/cells/cells/celld.c rename_cells_file 函数
+       
+    6、给主系统修改init.rc文件，要做如下几件事：
+       1）增加日志服务，celld服务和hostcmd服务
+       2）注意可先将celld设为disable属性，系统整体修改完以后可使用setprop ctl.start celld 命令 启动辅助系统
+       
+    7、将vendor/cells 中的 cells SecureSystemSwitch logcat Kernel_Kmsg 移植进自己的工程中，将编译链设置好
+    
+    8、按照github源码对比合入frameworks/native 源码
+    
+    9、按照github源码对比合入frameworks/av 源码
+    
+    10、按照github源码对比合入frameworks/base 源码
+    
+    11、按照github源码对比合入adb 源码
+
+    12、按照github源码对比合入hardware/power 源码
+    
+    注意事项：
+    1、按这个步骤1个1个的合入，编译，刷机，验证，务必保证日志系统、主系统和原生系统是一致的
+    2、所有项合入后，使用 setprop ctl.start celld 手动启动辅助系统
+    3、启动辅助系统时，可能会遇见三个问题
+       1）..._os_Zygote.cpp 文件中 gOpenFdTable abort 问题，解决办法：辅助系统单方面屏蔽该功能
+       2）模拟sdcard无法挂载，解决办法：init.cell.rc 中增加 mkdir /storage 0755 root root 
+       3) 动态调频功能无法使用，解决办法：辅助系统单方面屏蔽该功能
+       
+    4、最后双系统主体结构便构造完成了，如果想完整产品化，还有很长的路需要完成
+    
+    祝好！
+    
